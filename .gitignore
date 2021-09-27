@@ -1,0 +1,6 @@
+code/._**
+code/results/**
+code/__pycache__/**
+code/.ipynb_**
+code/best_model/**
+code/prediction/**
