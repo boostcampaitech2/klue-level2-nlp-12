@@ -18,9 +18,14 @@ SEED = 42
 raw_train_df = pd.read_csv(TRAIN_FILE_PATH)
 
 
-def change_origin_file_name(file_path, new_name: str = 'old_train.csv'):
+def change_origin_file_name(file_path: str, new_name: str = 'old_train.csv'):
+    """[summary]
+        원래 존재했던 `train.py` 파일명을 `new_name`으로 변경
+    Args:
+        file_path ([str]): [description]
+        new_name (str, optional): [description]. Defaults to 'old_train.csv'.
+    """
     NEW_TRAIN_FILE_PATH = os.path.join(os.path.split(file_path)[0], new_name)
-
     os.rename(file_path, NEW_TRAIN_FILE_PATH)
 
 
