@@ -24,7 +24,7 @@ def inference(model, tokenized_sent, device):
       outputs = model(
           input_ids=data['input_ids'].to(device),
           attention_mask=data['attention_mask'].to(device),
-          token_type_ids=data['token_type_ids'].to(device)
+          # token_type_ids=data['token_type_ids'].to(device) # klue/roberta 관련 모델의 경우, 주석 처리
           )
     logits = outputs[0]
     prob = F.softmax(logits, dim=-1).detach().cpu().numpy()
@@ -55,9 +55,8 @@ def load_test_dataset(dataset_dir, tokenizer):
     test dataset을 불러온 후,
     tokenizing 합니다.
   """
-  test_dataset = load_data(dataset_dir)
+  test_dataset = load_test_data(dataset_dir)
   test_label = list(map(int,test_dataset['label'].values))
-  # tokenizing dataset
   tokenized_test = tokenized_dataset(test_dataset, tokenizer)
   return test_dataset['id'], tokenized_test, test_label
 
@@ -67,7 +66,8 @@ def main(args):
   """
   device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
   # load tokenizer
-  Tokenizer_NAME = "klue/bert-base"
+  # Tokenizer_NAME = "klue/bert-base"
+  Tokenizer_NAME = "klue/roberta-base"
   tokenizer = AutoTokenizer.from_pretrained(Tokenizer_NAME)
 
   ## load my model
@@ -88,11 +88,12 @@ def main(args):
   ## make csv file with predicted answer
   #########################################################
   # 아래 directory와 columns의 형태는 지켜주시기 바랍니다.
-  output = pd.DataFrame({'id':test_id,'pred_label':pred_answer,'probs':output_prob,})
+  output = pd.DataFrame({'id': test_id, 'pred_label': pred_answer, 'probs': output_prob})
 
   output.to_csv('./prediction/submission.csv', index=False) # 최종적으로 완성된 예측한 라벨 csv 파일 형태로 저장.
   #### 필수!! ##############################################
   print('---- Finish! ----')
+
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   
