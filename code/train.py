@@ -96,10 +96,11 @@ def label_to_num(label):
 def train(arg):
     # load model and tokenizer
     # MODEL_NAME = "bert-base-uncased"
-    MODEL_NAME = "klue/roberta-base"
+    # MODEL_NAME = "klue/roberta-base"
+    MODEL_NAME = "klue/roberta-large"
     # MODEL_NAME = "xlm-roberta-large"
     # MODEL_NAME = "roberta-large"
-
+    TITLE = arg.title
     SEED = arg.seed
 
     # tokenizer = BertTokenizer.from_pretrained(MODEL_NAME)
@@ -153,7 +154,7 @@ def train(arg):
         # 사용한 option 외에도 다양한 option들이 있습니다.
         # https://huggingface.co/transformers/main_classes/trainer.html#trainingarguments 참고해주세요.
         training_args = TrainingArguments(
-            output_dir='./results'+'/' + TIME,  # output directory
+            output_dir='./results'+'/' + TITLE,  # output directory
             save_total_limit=5,               # number of total save model.
             save_steps=500,                   # model saving step.
             num_train_epochs=5,               # total number of training epochs
@@ -162,7 +163,7 @@ def train(arg):
             per_device_eval_batch_size=50,    # batch size for evaluation
             warmup_steps=500,                 # number of warmup steps for learning rate scheduler
             weight_decay=0.01,                # strength of weight decay
-            logging_dir='./logs'+'/'+TIME,        # directory for storing logs
+            logging_dir='./logs'+'/'+TITLE,        # directory for storing logs
             logging_steps=100,                # log saving step.
             evaluation_strategy='steps',      # evaluation strategy to adopt during training
             # `no`: No evaluation during training.
@@ -183,7 +184,7 @@ def train(arg):
 
         # train model
         trainer.train()
-        model.save_pretrained('./best_model/'+TIME+'/'+'Fold'+str(fold))
+        model.save_pretrained('./best_model/'+TITLE+'/'+'Fold'+str(fold))
         del model, trainer, training_args
         torch.cuda.empty_cache()
 
@@ -201,6 +202,8 @@ if __name__ == '__main__':
     # Data and model checkpoints directories
     parser.add_argument('--seed', type=int, default=42,
                         help='seed value (default: 42)')
+    parser.add_argument('--title', type=str, default=TIME,
+                        help='set folder name (default: current time)')
 
     args = parser.parse_args()
     print('--- Args List ---')
