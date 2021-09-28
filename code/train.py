@@ -9,8 +9,9 @@ import argparse
 
 from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score
 from transformers import XLMRobertaForSequenceClassification, XLMRobertaConfig, XLMRobertaTokenizer, AutoTokenizer, AutoConfig, AutoModelForSequenceClassification, Trainer, TrainingArguments, RobertaConfig, RobertaTokenizer, RobertaForSequenceClassification, BertTokenizer
-# from transformers import *
+from transformers import EarlyStoppingCallback
 from load_data import *
+from torch.utils.tensorboard import SummaryWriter
 
 def seed_everything(seed: int = 42):
   '''
@@ -82,12 +83,15 @@ def label_to_num(label):
     num_label.append(dict_label_to_num[v])
   return num_label
 
-def train():
-  # load model and tokenizer
-  # MODEL_NAME = "bert-base-uncased"
-  MODEL_NAME = "klue/roberta-base"
-  # MODEL_NAME = "xlm-roberta-large"
-  # MODEL_NAME = "roberta-large"
+def train(args):
+  '''
+  A train function to get trained model
+
+  :param args (argparse): A list of args to control various processes
+  :return:
+  '''
+
+  MODEL_NAME = args.model_name
 
   # tokenizer = BertTokenizer.from_pretrained(MODEL_NAME)
   # tokenizer = RobertaTokenizer.from_pretrained(MODEL_NAME)
@@ -133,7 +137,7 @@ def train():
     output_dir='./results',           # output directory
     save_total_limit=5,               # number of total save model.
     save_steps=500,                   # model saving step.
-    num_train_epochs=3,               # total number of training epochs
+    num_train_epochs=4,               # total number of training epochs
     learning_rate=5e-5,               # learning_rate
     per_device_train_batch_size=16,   # batch size per device during training
     per_device_eval_batch_size=16,    # batch size for evaluation
@@ -141,6 +145,7 @@ def train():
     weight_decay=0.01,                # strength of weight decay
     logging_dir='./logs',             # directory for storing logs
     logging_steps=100,                # log saving step.
+    logging_strategy='steps',
     evaluation_strategy='steps',      # evaluation strategy to adopt during training
                                         # `no`: No evaluation during training.
                                         # `steps`: Evaluate every `eval_steps`.
@@ -153,7 +158,10 @@ def train():
     args=training_args,                     # training arguments, defined above
     train_dataset=RE_train_dataset,         # training dataset
     eval_dataset=RE_dev_dataset,            # evaluation dataset
-    compute_metrics=compute_metrics         # define metrics function
+    compute_metrics=compute_metrics,        # define metrics function
+    callbacks=[                             # set early stopping callback
+      EarlyStoppingCallback(early_stopping_patience=3)
+    ]
   )
 
   # train model
@@ -162,18 +170,20 @@ def train():
 
 def main(args):
   seed_everything()
-
-  # train with args
-  train()
+  train(args)
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
 
-  # Data and model checkpoints directories
+  # args
   parser.add_argument('--seed', type=int, default=42, help='seed value (default: 42)')
+  parser.add_argument('--model_name', type=str, default='klue/roberta-base', help='model name(default: klue)')
+  # parser.add_argument('--seed', type=int, default=42, help='seed value (default: 42)')
+  # parser.add_argument('--seed', type=int, default=42, help='seed value (default: 42)')
+  # parser.add_argument('--seed', type=int, default=42, help='seed value (default: 42)')
+  # parser.add_argument('--seed', type=int, default=42, help='seed value (default: 42)')
 
   args = parser.parse_args()
   print('--- Args List ---')
   print(args)
-
   main(args)
