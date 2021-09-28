@@ -23,6 +23,25 @@ class RE_Dataset(torch.utils.data.Dataset):
   def __len__(self):
     return len(self.labels)
 
+def preprocessing_test_dataset(dataset:pd.DataFrame):
+  '''
+  A Preprocessing function to convert original test dataset to useful one
+
+  :param dataset (DataFrame): an original test dataset from train.csv
+  :return:
+  '''
+  subject_entity = []
+  object_entity = []
+  for i, j in zip(dataset['subject_entity'], dataset['object_entity']):
+    i = i[1:-1].split(',')[0].split(':')[1]  # 비틀즈
+    j = j[1:-1].split(',')[0].split(':')[1]  # 조지 해리슨
+
+    subject_entity.append(i)
+    object_entity.append(j)
+  out_dataset = pd.DataFrame({'id': dataset['id'], 'sentence': dataset['sentence'], 'subject_entity': subject_entity,
+                              'object_entity': object_entity, 'label': dataset['label']})
+  return out_dataset
+
 def preprocessing_dataset(dataset:pd.DataFrame):
   '''
   A Preprocessing function to convert original dataset to useful one
@@ -49,6 +68,17 @@ def preprocessing_dataset(dataset:pd.DataFrame):
   print('--- Val Set Length ---')
   print(len(val_set))
   return train_set, val_set
+
+def load_test_data(dataset_dir:str):
+  '''
+  Load original dataset from test.csv
+
+  :param dataset_dir (str): a path of test.csv
+  :return:
+  '''
+  pd_dataset = pd.read_csv(dataset_dir)
+  test_set = preprocessing_test_dataset(pd_dataset)
+  return test_set
 
 def load_data(dataset_dir:str):
   '''
