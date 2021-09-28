@@ -33,8 +33,8 @@ def preprocessing_test_dataset(dataset:pd.DataFrame):
   subject_entity = []
   object_entity = []
   for i, j in zip(dataset['subject_entity'], dataset['object_entity']):
-    i = i[1:-1].split(',')[0].split(':')[1]  # 비틀즈
-    j = j[1:-1].split(',')[0].split(':')[1]  # 조지 해리슨
+    i = eval(i)['word']  # 비틀즈
+    j = eval(j)['word']  # 조지 해리슨
 
     subject_entity.append(i)
     object_entity.append(j)
@@ -52,8 +52,8 @@ def preprocessing_dataset(dataset:pd.DataFrame):
   subject_entity = []
   object_entity = []
   for i,j in zip(dataset['subject_entity'], dataset['object_entity']):
-    i = i[1:-1].split(',')[0].split(':')[1] # 비틀즈
-    j = j[1:-1].split(',')[0].split(':')[1] # 조지 해리슨
+    i = eval(i)['word']  # 비틀즈
+    j = eval(j)['word']  # 조지 해리슨
 
     subject_entity.append(i)
     object_entity.append(j)
