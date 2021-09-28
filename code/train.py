@@ -11,9 +11,10 @@ from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_sc
 from transformers import XLMRobertaForSequenceClassification, XLMRobertaConfig, XLMRobertaTokenizer, AutoTokenizer, AutoConfig, AutoModelForSequenceClassification, Trainer, TrainingArguments, RobertaConfig, RobertaTokenizer, RobertaForSequenceClassification, BertTokenizer
 # from transformers import *
 from load_data import *
-
+from utils import *
 
 KFLOD_NUM = 5
+TIME = korea_now()
 
 
 def seed_everything(seed: int = 42):
@@ -92,12 +93,14 @@ def label_to_num(label):
     return num_label
 
 
-def train():
+def train(arg):
     # load model and tokenizer
     # MODEL_NAME = "bert-base-uncased"
     MODEL_NAME = "klue/roberta-base"
     # MODEL_NAME = "xlm-roberta-large"
     # MODEL_NAME = "roberta-large"
+
+    SEED = arg.seed
 
     # tokenizer = BertTokenizer.from_pretrained(MODEL_NAME)
     # tokenizer = RobertaTokenizer.from_pretrained(MODEL_NAME)
@@ -113,8 +116,8 @@ def train():
     folds = make_stratifiedkfold(raw_df, raw_df.label, KFLOD_NUM, True, SEED)
     for fold, (trn_idx, dev_idx) in enumerate(folds):
         # K-fold 실행시 아래 if문을 주석 하시면 됩니다.
-        if fold > 0:
-            break
+        # if fold > 0:
+        #     break
         train_dataset, dev_dataset = make_train_df(raw_df, trn_idx, dev_idx)
 
         train_label = label_to_num(train_dataset['label'].values)
@@ -150,16 +153,16 @@ def train():
         # 사용한 option 외에도 다양한 option들이 있습니다.
         # https://huggingface.co/transformers/main_classes/trainer.html#trainingarguments 참고해주세요.
         training_args = TrainingArguments(
-            output_dir='./results',           # output directory
+            output_dir='./results'+'/' + TIME,  # output directory
             save_total_limit=5,               # number of total save model.
             save_steps=500,                   # model saving step.
-            num_train_epochs=3,               # total number of training epochs
+            num_train_epochs=5,               # total number of training epochs
             learning_rate=5e-5,               # learning_rate
-            per_device_train_batch_size=16,   # batch size per device during training
-            per_device_eval_batch_size=16,    # batch size for evaluation
+            per_device_train_batch_size=50,   # batch size per device during training
+            per_device_eval_batch_size=50,    # batch size for evaluation
             warmup_steps=500,                 # number of warmup steps for learning rate scheduler
             weight_decay=0.01,                # strength of weight decay
-            logging_dir='./logs',             # directory for storing logs
+            logging_dir='./logs'+'/'+TIME,        # directory for storing logs
             logging_steps=100,                # log saving step.
             evaluation_strategy='steps',      # evaluation strategy to adopt during training
             # `no`: No evaluation during training.
@@ -180,7 +183,7 @@ def train():
 
         # train model
         trainer.train()
-        model.save_pretrained('./best_model')
+        model.save_pretrained('./best_model/'+TIME+'/'+'Fold'+str(fold))
         del model, trainer, training_args
         torch.cuda.empty_cache()
 
@@ -189,7 +192,7 @@ def main(args):
     seed_everything()
 
     # train with args
-    train()
+    train(args)
 
 
 if __name__ == '__main__':
