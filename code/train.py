@@ -238,12 +238,14 @@ def train(args):
             train_dataset=RE_train_dataset,  # training dataset
             eval_dataset=RE_dev_dataset,  # evaluation dataset
             compute_metrics=compute_metrics,  # define metrics function
-            callbacks=[EarlyStoppingCallback(early_stopping_patience=3)],
+            # callbacks=[EarlyStoppingCallback(early_stopping_patience=3)],
         )
 
         # train model
         trainer.train()
-        model.save_pretrained(args.save_name + TITLE + "/" + TITLE + "Fold" + str(fold))
+        model.save_pretrained(
+            args.save_name + TITLE + "/" + TITLE + "-Fold" + str(fold)
+        )
 
         del model, trainer, training_args
         torch.cuda.empty_cache()
@@ -275,7 +277,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--save_total_limit",
         type=int,
-        default=5e-5,
+        default=5,
         help="number of total save model (default: 5)",
     )
     parser.add_argument(
