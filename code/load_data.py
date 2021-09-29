@@ -4,7 +4,13 @@ import pandas as pd
 import torch
 
 from sklearn.model_selection import train_test_split
-from transformers import AutoTokenizer, BertTokenizer, RobertaTokenizer
+from transformers import AutoTokenizer, BertTokenizer, RobertaTokenizer, Trainer
+
+from pandas import DataFrame
+from sklearn.model_selection import StratifiedKFold
+import numpy as np
+from torch.utils.data import DataLoader
+
 
 class RE_Dataset(torch.utils.data.Dataset):
   """ Dataset 구성을 위한 class."""
@@ -91,27 +97,148 @@ def load_data(dataset_dir:str):
   train_set, val_set = preprocessing_dataset(pd_dataset)
   return train_set, val_set
 
+
 def tokenized_dataset(dataset, tokenizer):
-  """ tokenizer에 따라 sentence를 tokenizing 합니다."""
-  concat_entity = []
-  for e01, e02 in zip(dataset['subject_entity'], dataset['object_entity']):
-    temp = ''
-    temp = e01 + '[SEP]' + e02
+    """ tokenizer에 따라 sentence를 tokenizing 합니다."""
+    concat_entity = []
+    for e01, e02 in zip(dataset['subject_entity'], dataset['object_entity']):
+        temp = ''
+        temp = e01 + '[SEP]' + e02
 
-    # 주어 + 목적어 pair
-    concat_entity.append(temp)
-  tokenized_sentences = tokenizer(
-      concat_entity,
-      list(dataset['sentence']),
-      return_tensors="pt",
-      padding=True,
-      truncation=True,
-      max_length=256,
-      # max_length=46,
-      add_special_tokens=True,
-      return_token_type_ids=False
-      )
+        # 주어 + 목적어 pair
+        concat_entity.append(temp)
+    tokenized_sentences = tokenizer(
+        concat_entity,
+        list(dataset['sentence']),
+        return_tensors="pt",
+        padding=True,
+        truncation=True,
+        max_length=256,
+        # max_length=46,
+        add_special_tokens=True,
+        return_token_type_ids=False
+    )
 
-  print('--- Decode Tokenized Sentences ---')
-  print(tokenizer.decode(tokenized_sentences['input_ids'][0]))
-  return tokenized_sentences
+    print('--- Decode Tokenized Sentences ---')
+    print(tokenizer.decode(tokenized_sentences['input_ids'][0]))
+    return tokenized_sentences
+
+
+def make_stratifiedkfold(raw_train: DataFrame, raw_train_classes: list, n_splits: int, shuffle: bool, seed: int):
+    """ #### raw_train dataset을 stratifiedkfold로 나눠 주는 함수
+    raw data -> stratify 한 fklod로 만들어줌
+
+    Example:
+
+        >>> flods = make_stratifiedkfold(조건에 맞춰 arg 지정)
+        >>> for fold, (trn_idx, val_idx) in enumerate(folds):
+        >>>     train_df = raw_train.loc[trn_idx, :].reset_index(drop=True)
+        >>>     valid_df = raw_train.loc[val_idx, :].reset_index(drop=True)
+
+        >>>     train_dataset = DataSet(train_df)
+        >>>     valid_dataset = DataSet(valid_df)
+    Args:
+        raw_train (DataFrame): origin `train.csv` dataframe
+        raw_train_classes (list): raw data class(label)
+        n_splits (int): fold 갯수
+        shuffle (bool): 섞을 것인지 
+        seed (int): Random seed
+
+    Returns:
+        folds (Generator): (train idx, valid idx) 쌍을 생성
+    """
+    folds = StratifiedKFold(
+        n_splits=n_splits,
+        shuffle=shuffle,
+        random_state=seed
+    ).split(np.arange(raw_train.shape[0]), raw_train_classes)
+    return folds
+
+
+def make_train_df(raw_train: DataFrame, train_index: int, valid_index: int):
+    """
+    `make_stratifiedkfold()` 의 (train idx, valid idx) 쌍에 따라 Stratified 한 train_df, valid_df 생성
+
+    Args:
+        raw_train (DataFrame): origin `train.csv` dataframe
+        train_index (int): `make_stratifiedkfold()` 의 train idx
+        valid_index (int): `make_stratifiedkfold()` 의 valid idx
+
+    Returns:
+        train_df, valid_df: Dataset에 넣을 Dataframe
+    """
+    train_df = raw_train.loc[train_index, :].reset_index(drop=True)
+    valid_df = raw_train.loc[valid_index, :].reset_index(drop=True)
+    return train_df, valid_df
+
+
+# class CustomTrainer(Trainer):
+#     """[summary]
+#     Trainer에 sampler 추가
+#     """
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+
+#     def _get_train_sampler(self) -> Optional[torch.utils.data.Sampler]:
+#         if not isinstance(self.train_dataset, collections.abc.Sized):
+#             return None
+
+#         generator = None
+#         if self.args.world_size <= 1 and _is_torch_generator_available:
+#             generator = torch.Generator()
+#             generator.manual_seed(int(torch.empty((), dtype=torch.int64).random_().item()))
+
+#         # Build the sampler.
+#         if self.args.group_by_length:
+#             if is_datasets_available() and isinstance(self.train_dataset, datasets.Dataset):
+#                 lengths = (
+#                     self.train_dataset[self.args.length_column_name]
+#                     if self.args.length_column_name in self.train_dataset.column_names
+#                     else None
+#                 )
+#             else:
+#                 lengths = None
+#             model_input_name = self.tokenizer.model_input_names[0] if self.tokenizer is not None else None
+#             if self.args.world_size <= 1:
+#                 return LengthGroupedSampler(
+#                     self.train_dataset,
+#                     self.args.train_batch_size,
+#                     lengths=lengths,
+#                     model_input_name=model_input_name,
+#                     generator=generator,
+#                 )
+#             else:
+#                 return DistributedLengthGroupedSampler(
+#                     self.train_dataset,
+#                     self.args.train_batch_size,
+#                     num_replicas=self.args.world_size,
+#                     rank=self.args.process_index,
+#                     lengths=lengths,
+#                     model_input_name=model_input_name,
+#                     seed=self.args.seed,
+#                 )
+
+#         else:
+#             if self.args.world_size <= 1:
+#                 if _is_torch_generator_available:
+#                     return RandomSampler(self.train_dataset, generator=generator)
+#                 return RandomSampler(self.train_dataset)
+#             elif (
+#                 self.args.parallel_mode in [ParallelMode.TPU, ParallelMode.SAGEMAKER_MODEL_PARALLEL]
+#                 and not self.args.dataloader_drop_last
+#             ):
+#                 # Use a loop for TPUs when drop_last is False to have all batches have the same size.
+#                 return DistributedSamplerWithLoop(
+#                     self.train_dataset,
+#                     batch_size=self.args.per_device_train_batch_size,
+#                     num_replicas=self.args.world_size,
+#                     rank=self.args.process_index,
+#                     seed=self.args.seed,
+#                 )
+#             else:
+#                 return DistributedSampler(
+#                     self.train_dataset,
+#                     num_replicas=self.args.world_size,
+#                     rank=self.args.process_index,
+#                     seed=self.args.seed,
+#                 )
