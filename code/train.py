@@ -8,6 +8,7 @@ import numpy as np
 import random
 import argparse
 
+
 from sklearn.metrics import (
     accuracy_score,
     recall_score,
@@ -238,14 +239,12 @@ def train(args):
             train_dataset=RE_train_dataset,  # training dataset
             eval_dataset=RE_dev_dataset,  # evaluation dataset
             compute_metrics=compute_metrics,  # define metrics function
-            # callbacks=[EarlyStoppingCallback(early_stopping_patience=3)],
+            callbacks=[EarlyStoppingCallback(early_stopping_patience=3)],
         )
 
         # train model
         trainer.train()
-        model.save_pretrained(
-            args.save_name + TITLE + "/" + TITLE + "-Fold" + str(fold)
-        )
+        model.save_pretrained(args.save_name + "/" + TITLE + "-Fold" + str(fold))
 
         del model, trainer, training_args
         torch.cuda.empty_cache()
