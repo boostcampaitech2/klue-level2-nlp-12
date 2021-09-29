@@ -8,7 +8,13 @@ import numpy as np
 import random
 import argparse
 
-from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score, confusion_matrix
+from sklearn.metrics import (
+    accuracy_score,
+    recall_score,
+    precision_score,
+    f1_score,
+    confusion_matrix,
+)
 from transformers import (
     XLMRobertaForSequenceClassification,
     XLMRobertaConfig,
@@ -22,13 +28,14 @@ from transformers import (
     RobertaTokenizer,
     RobertaForSequenceClassification,
     BertTokenizer,
-    EarlyStoppingCallback
+    EarlyStoppingCallback,
 )
 
 from load_data import *
 from utils import *
 
 TIME = korea_now()
+
 
 def seed_everything(seed: int = 42):
     """
@@ -160,9 +167,9 @@ def train(args):
     # set StratifiedKFold
     folds = make_stratifiedkfold(raw_df, raw_df.label, KFLOD_NUM, True, SEED)
     for fold, (trn_idx, dev_idx) in enumerate(folds):
-        # K-fold 실행시 아래 if문을 주석 하시면 됩니다.
-        # if fold > 0:
-        #     break
+        if not args.run_kflod:
+            if fold > 0:
+                break
         train_dataset, dev_dataset = make_train_df(raw_df, trn_idx, dev_idx)
 
         # entity extraction by eval
@@ -231,14 +238,14 @@ def train(args):
             train_dataset=RE_train_dataset,  # training dataset
             eval_dataset=RE_dev_dataset,  # evaluation dataset
             compute_metrics=compute_metrics,  # define metrics function
-            callbacks=[
-                EarlyStoppingCallback(early_stopping_patience=3)
-            ]
+            # callbacks=[EarlyStoppingCallback(early_stopping_patience=3)],
         )
 
         # train model
         trainer.train()
-        model.save_pretrained(args.save_name + TITLE + "/" + "Fold" + str(fold))
+        model.save_pretrained(
+            args.save_name + TITLE + "/" + TITLE + "-Fold" + str(fold)
+        )
 
         del model, trainer, training_args
         torch.cuda.empty_cache()
@@ -248,9 +255,11 @@ def main(args):
     seed_everything(args.seed)
     train(args)
 
+
 if __name__ == "__main__":
     # disable warning log
     import os
+
     os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
     parser = argparse.ArgumentParser()
@@ -268,7 +277,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--save_total_limit",
         type=int,
-        default=5e-5,
+        default=5,
         help="number of total save model (default: 5)",
     )
     parser.add_argument(
@@ -335,6 +344,12 @@ if __name__ == "__main__":
         type=str,
         default="./best_model",
         help="model save at {save_name}",
+    )
+    parser.add_argument(
+        "--run_kflod",
+        type=bool,
+        default=False,
+        help="whether to use kfold(default: False)",
     )
 
     # directory args

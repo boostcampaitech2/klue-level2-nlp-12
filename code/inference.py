@@ -117,7 +117,7 @@ def main(args):
     custom_Re_test_dataset = RE_Dataset(custom_test_dataset, custom_test_label)
 
     if args.ensemble:
-        # ensemble 폴더에 어셈블할
+        # ensemble 폴더에 어셈블할 데이터를 폴더채로 넣으시면 됩니다
         output_probs = []
         custom_output_probs = []
         ensemble_dir = "./ensemble"
