@@ -165,6 +165,11 @@ def train(args):
         #     break
         train_dataset, dev_dataset = make_train_df(raw_df, trn_idx, dev_idx)
 
+        # entity extraction by eval
+        train_dataset = preprocessing_dataset(train_dataset)
+        dev_dataset = preprocessing_dataset(dev_dataset)
+
+        # label(str) => label(int)
         train_label = label_to_num(train_dataset["label"].values)
         dev_label = label_to_num(dev_dataset["label"].values)
 
@@ -172,7 +177,7 @@ def train(args):
         tokenized_train = tokenized_dataset(train_dataset, tokenizer)
         tokenized_dev = tokenized_dataset(dev_dataset, tokenizer)
 
-        # make dataset for pytorch.
+        # make dataset for pytorch
         RE_train_dataset = RE_Dataset(tokenized_train, train_label)
         RE_dev_dataset = RE_Dataset(tokenized_dev, dev_label)
 
@@ -226,6 +231,9 @@ def train(args):
             train_dataset=RE_train_dataset,  # training dataset
             eval_dataset=RE_dev_dataset,  # evaluation dataset
             compute_metrics=compute_metrics,  # define metrics function
+            callbacks=[
+                EarlyStoppingCallback(early_stopping_patience=3)
+            ]
         )
 
         # train model
@@ -238,12 +246,13 @@ def train(args):
 
 def main(args):
     seed_everything(args.seed)
-
-    # train with args
     train(args)
 
-
 if __name__ == "__main__":
+    # disable warning log
+    import os
+    os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
     parser = argparse.ArgumentParser()
 
     # seed and model args
@@ -267,7 +276,7 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
-        "--epochs", type=int, default=3, help="number of epochs to train (default: 3)"
+        "--epochs", type=int, default=6, help="number of epochs to train (default: 6)"
     )
     parser.add_argument(
         "--lr", type=float, default=5e-5, help="learning rate (default: 5e-5)"

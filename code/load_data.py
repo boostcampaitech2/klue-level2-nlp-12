@@ -86,16 +86,16 @@ def preprocessing_dataset(dataset: pd.DataFrame):
     )
 
     # split dataset into train, valid
-    train_set, val_set = train_test_split(
-        out_dataset, test_size=0.2, stratify=dataset["label"], random_state=42
-    )
-
-    print("--- Train Set Length ---")
-    print(len(train_set))
-
-    print("--- Val Set Length ---")
-    print(len(val_set))
-    return train_set, val_set
+    # train_set, val_set = train_test_split(
+    #     out_dataset, test_size=0.2, stratify=dataset["label"], random_state=42
+    # )
+    #
+    # print("--- Train Set Length ---")
+    # print(len(train_set))
+    #
+    print("--- Data Set Length ---")
+    print(len(out_dataset))
+    return out_dataset
 
 
 def load_test_data(dataset_dir: str):
@@ -137,8 +137,7 @@ def tokenized_dataset(dataset, tokenizer):
         return_tensors="pt",
         padding=True,
         truncation=True,
-        max_length=256,
-        # max_length=46,
+        max_length=128,
         add_special_tokens=True,
         return_token_type_ids=False,
     )
