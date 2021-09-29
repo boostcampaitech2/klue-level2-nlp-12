@@ -8,6 +8,7 @@ import numpy as np
 import random
 import argparse
 
+test = 'test'
 
 from sklearn.metrics import (
     accuracy_score,
