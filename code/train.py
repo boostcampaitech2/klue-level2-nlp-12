@@ -161,9 +161,9 @@ def train(args):
     # set StratifiedKFold
     folds = make_stratifiedkfold(raw_df, raw_df.label, KFLOD_NUM, True, SEED)
     for fold, (trn_idx, dev_idx) in enumerate(folds):
-        # K-fold 실행시 아래 if문을 주석 하시면 됩니다.
-        # if fold > 0:
-        #     break
+        if not args.run_kflod:
+            if fold > 0:
+                break
         train_dataset, dev_dataset = make_train_df(raw_df, trn_idx, dev_idx)
 
         train_label = label_to_num(train_dataset["label"].values)
@@ -231,7 +231,7 @@ def train(args):
 
         # train model
         trainer.train()
-        model.save_pretrained(args.save_name + TITLE + "/" + "Fold" + str(fold))
+        model.save_pretrained(args.save_name + TITLE + "/" + TITLE + "Fold" + str(fold))
 
         del model, trainer, training_args
         torch.cuda.empty_cache()
@@ -327,6 +327,12 @@ if __name__ == "__main__":
         type=str,
         default="./best_model",
         help="model save at {save_name}",
+    )
+    parser.add_argument(
+        "--run_kflod",
+        type=bool,
+        default=False,
+        help="whether to use kfold(default: False)",
     )
 
     # directory args
