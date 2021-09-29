@@ -200,6 +200,33 @@ def make_train_df(raw_train: DataFrame, train_index: int, valid_index: int):
     return train_df, valid_df
 
 
+def make_train_set(dataset: DataFrame):
+    """
+    A Preprocessing function to convert original dataset to useful one
+
+    :param dataset (DataFrame): an original train dataset from train.csv
+    :return:
+    """
+    subject_entity = []
+    object_entity = []
+    for i, j in zip(dataset["subject_entity"], dataset["object_entity"]):
+        i = eval(i)["word"]  # 비틀즈
+        j = eval(j)["word"]  # 조지 해리슨
+
+        subject_entity.append(i)
+        object_entity.append(j)
+    out_dataset = pd.DataFrame(
+        {
+            "id": dataset["id"],
+            "sentence": dataset["sentence"],
+            "subject_entity": subject_entity,
+            "object_entity": object_entity,
+            "label": dataset["label"],
+        }
+    )
+    return out_dataset
+
+
 # class CustomTrainer(Trainer):
 #     """[summary]
 #     Trainer에 sampler 추가

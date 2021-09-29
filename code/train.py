@@ -164,8 +164,8 @@ def train(args):
         if not args.run_kflod:
             if fold > 0:
                 break
-        train_dataset, dev_dataset = make_train_df(raw_df, trn_idx, dev_idx)
-
+        train_df, dev_df = make_train_df(raw_df, trn_idx, dev_idx)
+        train_dataset, dev_dataset = make_train_set(train_df), make_train_set(dev_df)
         train_label = label_to_num(train_dataset["label"].values)
         dev_label = label_to_num(dev_dataset["label"].values)
 
