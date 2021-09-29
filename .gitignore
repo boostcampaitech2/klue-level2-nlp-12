@@ -4,3 +4,7 @@ code/__pycache__/**
 code/.ipynb_**
 code/best_model/**
 code/prediction/**
+code/logs/**
+code/ensemble/**
+code/test.ipynb
+.idea/
