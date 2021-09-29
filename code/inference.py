@@ -176,7 +176,8 @@ def main(args):
     # 최종적으로 완성된 예측한 라벨 csv 파일 형태로 저장.
     output.to_csv("./prediction/submission.csv", index=False)
     #### 필수!! ##############################################
-    print(classification_report(custom_test_label, custom_pred_answer))
+    if args.use_data_helper:
+        print(classification_report(custom_test_label, custom_pred_answer))
     print("---- Finish! ----")
 
 
