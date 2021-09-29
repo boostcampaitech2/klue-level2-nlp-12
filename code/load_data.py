@@ -13,97 +13,89 @@ from torch.utils.data import DataLoader
 
 
 class RE_Dataset(torch.utils.data.Dataset):
-    """ Dataset 구성을 위한 class."""
+  """ Dataset 구성을 위한 class."""
+  def __init__(self, pair_dataset, labels):
+    self.pair_dataset = pair_dataset
+    self.labels = labels
 
-    def __init__(self, pair_dataset, labels):
-        self.pair_dataset = pair_dataset
-        self.labels = labels
+    print('--- Pair Dataset ---')
+    print(pair_dataset)
 
-        print('--- Pair Dataset ---')
-        print(pair_dataset)
+  def __getitem__(self, idx):
+    item = {key: val[idx].clone().detach() for key, val in self.pair_dataset.items()}
+    item['labels'] = torch.tensor(self.labels[idx])
+    return item
 
-    def __getitem__(self, idx):
-        item = {key: val[idx].clone().detach()
-                for key, val in self.pair_dataset.items()}
-        item['labels'] = torch.tensor(self.labels[idx])
-        return item
+  def __len__(self):
+    return len(self.labels)
 
-    def __len__(self):
-        return len(self.labels)
+def preprocessing_test_dataset(dataset:pd.DataFrame):
+  '''
+  A Preprocessing function to convert original test dataset to useful one
 
+  :param dataset (DataFrame): an original test dataset from train.csv
+  :return:
+  '''
+  subject_entity = []
+  object_entity = []
+  for i, j in zip(dataset['subject_entity'], dataset['object_entity']):
+    i = eval(i)['word']  # 비틀즈
+    j = eval(j)['word']  # 조지 해리슨
 
-def preprocessing_test_dataset(dataset: pd.DataFrame):
-    '''
-    A Preprocessing function to convert original test dataset to useful one
+    subject_entity.append(i)
+    object_entity.append(j)
+  out_dataset = pd.DataFrame({'id': dataset['id'], 'sentence': dataset['sentence'], 'subject_entity': subject_entity,
+                              'object_entity': object_entity, 'label': dataset['label']})
+  return out_dataset
 
-    :param dataset (DataFrame): an original test dataset from train.csv
-    :return:
-    '''
-    subject_entity = []
-    object_entity = []
-    for i, j in zip(dataset['subject_entity'], dataset['object_entity']):
-        i = i[1:-1].split(',')[0].split(':')[1]  # 비틀즈
-        j = j[1:-1].split(',')[0].split(':')[1]  # 조지 해리슨
+def preprocessing_dataset(dataset:pd.DataFrame):
+  '''
+  A Preprocessing function to convert original dataset to useful one
 
-        subject_entity.append(i)
-        object_entity.append(j)
-    out_dataset = pd.DataFrame({'id': dataset['id'], 'sentence': dataset['sentence'], 'subject_entity': subject_entity,
-                                'object_entity': object_entity, 'label': dataset['label']})
-    return out_dataset
+  :param dataset (DataFrame): an original train dataset from train.csv
+  :return:
+  '''
+  subject_entity = []
+  object_entity = []
+  for i,j in zip(dataset['subject_entity'], dataset['object_entity']):
+    i = eval(i)['word']  # 비틀즈
+    j = eval(j)['word']  # 조지 해리슨
 
+    subject_entity.append(i)
+    object_entity.append(j)
+  out_dataset = pd.DataFrame({'id':dataset['id'], 'sentence':dataset['sentence'],'subject_entity':subject_entity,'object_entity':object_entity,'label':dataset['label']})
 
-def preprocessing_dataset(dataset: pd.DataFrame):
-    '''
-    A Preprocessing function to convert original dataset to useful one
+  # split dataset into train, valid
+  train_set, val_set = train_test_split(out_dataset, test_size=0.2, stratify=dataset['label'], random_state=42)
 
-    :param dataset (DataFrame): an original train dataset from train.csv
-    :return:
-    '''
-    subject_entity = []
-    object_entity = []
-    for i, j in zip(dataset['subject_entity'], dataset['object_entity']):
-        i = i[1:-1].split(',')[0].split(':')[1]  # 비틀즈
-        j = j[1:-1].split(',')[0].split(':')[1]  # 조지 해리슨
+  print('--- Train Set Length ---')
+  print(len(train_set))
 
-        subject_entity.append(i)
-        object_entity.append(j)
-    out_dataset = pd.DataFrame({'id': dataset['id'], 'sentence': dataset['sentence'],
-                               'subject_entity': subject_entity, 'object_entity': object_entity, 'label': dataset['label']})
+  print('--- Val Set Length ---')
+  print(len(val_set))
+  return train_set, val_set
 
-    # split dataset into train, valid
-    train_set, val_set = train_test_split(
-        out_dataset, test_size=0.2, stratify=dataset['label'], random_state=42)
+def load_test_data(dataset_dir:str):
+  '''
+  Load original dataset from test.csv
 
-    print('--- Train Set Length ---')
-    print(len(train_set))
+  :param dataset_dir (str): a path of test.csv
+  :return:
+  '''
+  pd_dataset = pd.read_csv(dataset_dir)
+  test_set = preprocessing_test_dataset(pd_dataset)
+  return test_set
 
-    print('--- Val Set Length ---')
-    print(len(val_set))
-    return train_set, val_set
+def load_data(dataset_dir:str):
+  '''
+  Load original dataset from train.csv
 
-
-def load_test_data(dataset_dir: str):
-    '''
-    Load original dataset from test.csv
-
-    :param dataset_dir (str): a path of test.csv
-    :return:
-    '''
-    pd_dataset = pd.read_csv(dataset_dir)
-    test_set = preprocessing_test_dataset(pd_dataset)
-    return test_set
-
-
-def load_data(dataset_dir: str):
-    '''
-    Load original dataset from train.csv
-
-    :param dataset_dir (str): a path of train.csv
-    :return:
-    '''
-    pd_dataset = pd.read_csv(dataset_dir)
-    train_set, val_set = preprocessing_dataset(pd_dataset)
-    return train_set, val_set
+  :param dataset_dir (str): a path of train.csv
+  :return:
+  '''
+  pd_dataset = pd.read_csv(dataset_dir)
+  train_set, val_set = preprocessing_dataset(pd_dataset)
+  return train_set, val_set
 
 
 def tokenized_dataset(dataset, tokenizer):
