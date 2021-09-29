@@ -86,16 +86,16 @@ def preprocessing_dataset(dataset: pd.DataFrame):
     )
 
     # split dataset into train, valid
-    train_set, val_set = train_test_split(
-        out_dataset, test_size=0.2, stratify=dataset["label"], random_state=42
-    )
-
-    print("--- Train Set Length ---")
-    print(len(train_set))
-
-    print("--- Val Set Length ---")
-    print(len(val_set))
-    return train_set, val_set
+    # train_set, val_set = train_test_split(
+    #     out_dataset, test_size=0.2, stratify=dataset["label"], random_state=42
+    # )
+    #
+    # print("--- Train Set Length ---")
+    # print(len(train_set))
+    #
+    print("--- Data Set Length ---")
+    print(len(out_dataset))
+    return out_dataset
 
 
 def load_test_data(dataset_dir: str):
@@ -137,8 +137,7 @@ def tokenized_dataset(dataset, tokenizer):
         return_tensors="pt",
         padding=True,
         truncation=True,
-        max_length=256,
-        # max_length=46,
+        max_length=128,
         add_special_tokens=True,
         return_token_type_ids=False,
     )
@@ -198,33 +197,6 @@ def make_train_df(raw_train: DataFrame, train_index: int, valid_index: int):
     train_df = raw_train.loc[train_index, :].reset_index(drop=True)
     valid_df = raw_train.loc[valid_index, :].reset_index(drop=True)
     return train_df, valid_df
-
-
-def make_train_set(dataset: DataFrame):
-    """
-    A Preprocessing function to convert original dataset to useful one
-
-    :param dataset (DataFrame): an original train dataset from train.csv
-    :return:
-    """
-    subject_entity = []
-    object_entity = []
-    for i, j in zip(dataset["subject_entity"], dataset["object_entity"]):
-        i = eval(i)["word"]  # 비틀즈
-        j = eval(j)["word"]  # 조지 해리슨
-
-        subject_entity.append(i)
-        object_entity.append(j)
-    out_dataset = pd.DataFrame(
-        {
-            "id": dataset["id"],
-            "sentence": dataset["sentence"],
-            "subject_entity": subject_entity,
-            "object_entity": object_entity,
-            "label": dataset["label"],
-        }
-    )
-    return out_dataset
 
 
 # class CustomTrainer(Trainer):
