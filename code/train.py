@@ -9,7 +9,21 @@ import random
 import argparse
 
 from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score
-from transformers import XLMRobertaForSequenceClassification, XLMRobertaConfig, XLMRobertaTokenizer, AutoTokenizer, AutoConfig, AutoModelForSequenceClassification, Trainer, TrainingArguments, RobertaConfig, RobertaTokenizer, RobertaForSequenceClassification, BertTokenizer
+from transformers import (
+    XLMRobertaForSequenceClassification,
+    XLMRobertaConfig,
+    XLMRobertaTokenizer,
+    AutoTokenizer,
+    AutoConfig,
+    AutoModelForSequenceClassification,
+    Trainer,
+    TrainingArguments,
+    RobertaConfig,
+    RobertaTokenizer,
+    RobertaForSequenceClassification,
+    BertTokenizer,
+)
+
 # from transformers import *
 from load_data import *
 from utils import *
@@ -18,12 +32,12 @@ TIME = korea_now()
 
 
 def seed_everything(seed: int = 42):
-    '''
+    """
     Fix all related seeds
 
     :param seed: 42 (default)
     :return:
-    '''
+    """
     random.seed(seed)
     np.random.seed(seed)
     os.environ["PYTHONHASHSEED"] = str(seed)
@@ -35,21 +49,45 @@ def seed_everything(seed: int = 42):
 
 def klue_re_micro_f1(preds, labels):
     """KLUE-RE micro f1 (except no_relation)"""
-    label_list = ['no_relation', 'org:top_members/employees', 'org:members',
-                  'org:product', 'per:title', 'org:alternate_names',
-                  'per:employee_of', 'org:place_of_headquarters', 'per:product',
-                  'org:number_of_employees/members', 'per:children',
-                  'per:place_of_residence', 'per:alternate_names',
-                  'per:other_family', 'per:colleagues', 'per:origin', 'per:siblings',
-                  'per:spouse', 'org:founded', 'org:political/religious_affiliation',
-                  'org:member_of', 'per:parents', 'org:dissolved',
-                  'per:schools_attended', 'per:date_of_death', 'per:date_of_birth',
-                  'per:place_of_birth', 'per:place_of_death', 'org:founded_by',
-                  'per:religion']
+    label_list = [
+        "no_relation",
+        "org:top_members/employees",
+        "org:members",
+        "org:product",
+        "per:title",
+        "org:alternate_names",
+        "per:employee_of",
+        "org:place_of_headquarters",
+        "per:product",
+        "org:number_of_employees/members",
+        "per:children",
+        "per:place_of_residence",
+        "per:alternate_names",
+        "per:other_family",
+        "per:colleagues",
+        "per:origin",
+        "per:siblings",
+        "per:spouse",
+        "org:founded",
+        "org:political/religious_affiliation",
+        "org:member_of",
+        "per:parents",
+        "org:dissolved",
+        "per:schools_attended",
+        "per:date_of_death",
+        "per:date_of_birth",
+        "per:place_of_birth",
+        "per:place_of_death",
+        "org:founded_by",
+        "per:religion",
+    ]
     no_relation_label_idx = label_list.index("no_relation")
     label_indices = list(range(len(label_list)))
     label_indices.remove(no_relation_label_idx)
-    return sklearn.metrics.f1_score(labels, preds, average="micro", labels=label_indices) * 100.0
+    return (
+        sklearn.metrics.f1_score(labels, preds, average="micro", labels=label_indices)
+        * 100.0
+    )
 
 
 def klue_re_auprc(probs, labels):
@@ -61,13 +99,14 @@ def klue_re_auprc(probs, labels):
         targets_c = labels.take([c], axis=1).ravel()
         preds_c = probs.take([c], axis=1).ravel()
         precision, recall, _ = sklearn.metrics.precision_recall_curve(
-            targets_c, preds_c)
+            targets_c, preds_c
+        )
         score[c] = sklearn.metrics.auc(recall, precision)
     return np.average(score) * 100.0
 
 
 def compute_metrics(pred):
-    """ validation을 위한 metrics function """
+    """validation을 위한 metrics function"""
     labels = pred.label_ids
     preds = pred.predictions.argmax(-1)
     probs = pred.predictions
@@ -78,15 +117,15 @@ def compute_metrics(pred):
     acc = accuracy_score(labels, preds)  # 리더보드 평가에는 포함되지 않습니다.
 
     return {
-        'micro f1 score': f1,
-        'auprc': auprc,
-        'accuracy': acc,
+        "micro f1 score": f1,
+        "auprc": auprc,
+        "accuracy": acc,
     }
 
 
 def label_to_num(label):
     num_label = []
-    with open('dict_label_to_num.pkl', 'rb') as f:
+    with open("dict_label_to_num.pkl", "rb") as f:
         dict_label_to_num = pickle.load(f)
     for v in label:
         num_label.append(dict_label_to_num[v])
@@ -100,9 +139,9 @@ def train(args):
     # MODEL_NAME = "klue/roberta-large"
     # MODEL_NAME = "xlm-roberta-large"
     # MODEL_NAME = "roberta-large"
-    MODEL_NAME = args.model # defalut : klue/roberta-base
+    MODEL_NAME = args.model  # defalut : klue/roberta-base
     if args.title == None:
-        TITLE = args.model
+        TITLE = args.model.replace("/", "-")
     else:
         TITLE = args.title
     SEED = args.seed
@@ -117,7 +156,7 @@ def train(args):
     # load dataset
     # train_dataset, dev_dataset = load_data("../dataset/train/train.csv")
     # dev_dataset = load_data("../dataset/train/dev.csv") # validation용 데이터는 따로 만드셔야 합니다.
-    raw_df = pd.read_csv('/opt/ml/dataset/train/train.csv')
+    raw_df = pd.read_csv("/opt/ml/dataset/train/train.csv")
 
     # set StratifiedKFold
     folds = make_stratifiedkfold(raw_df, raw_df.label, KFLOD_NUM, True, SEED)
@@ -127,8 +166,8 @@ def train(args):
         #     break
         train_dataset, dev_dataset = make_train_df(raw_df, trn_idx, dev_idx)
 
-        train_label = label_to_num(train_dataset['label'].values)
-        dev_label = label_to_num(dev_dataset['label'].values)
+        train_label = label_to_num(train_dataset["label"].values)
+        dev_label = label_to_num(dev_dataset["label"].values)
 
         # tokenizing dataset
         tokenized_train = tokenized_dataset(train_dataset, tokenizer)
@@ -138,7 +177,7 @@ def train(args):
         RE_train_dataset = RE_Dataset(tokenized_train, train_label)
         RE_dev_dataset = RE_Dataset(tokenized_dev, dev_label)
 
-        device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         print(device)
 
         # setting model hyperparameter
@@ -148,7 +187,8 @@ def train(args):
 
         # model = XLMRobertaForSequenceClassification.from_pretrained(MODEL_NAME, config=model_config)
         model = AutoModelForSequenceClassification.from_pretrained(
-            MODEL_NAME, config=model_config)
+            MODEL_NAME, config=model_config
+        )
         # model = RobertaForSequenceClassification.from_pretrained(MODEL_NAME, config=model_config)
         print(model.config)
 
@@ -161,37 +201,37 @@ def train(args):
         # https://huggingface.co/transformers/main_classes/trainer.html#trainingarguments 참고해주세요.
 
         training_args = TrainingArguments(
-            output_dir=args.output_dir+'/'+TITLE,           # output directory
-            save_total_limit=args.save_total_limit,               # number of total save model.
-            save_steps=args.save_steps,                   # model saving step.
-            num_train_epochs=args.epochs,               # total number of training epochs
-            learning_rate=args.lr,               # learning_rate
-            per_device_train_batch_size=args.train_batch_size,   # batch size per device during training
-            per_device_eval_batch_size=args.eval_batch_size,    # batch size for evaluation
-            warmup_steps=args.warmup_steps,                 # number of warmup steps for learning rate scheduler
-            weight_decay=args.weight_decay,                # strength of weight decay
-            logging_dir=args.logging_dir+'/'+TITLE,             # directory for storing logs
-            logging_steps=args.logging_steps,                # log saving step.
-            evaluation_strategy=args.evaluation_strategy,      # evaluation strategy to adopt during training
-                                                # `no`: No evaluation during training.
-                                                # `steps`: Evaluate every `eval_steps`.
-                                                # `epoch`: Evaluate every end of epoch.
-            eval_steps = args.eval_steps,                 # evaluation step.
-            load_best_model_at_end = True,
-            dataloader_num_workers=4
-       )
+            output_dir=args.output_dir + "/" + TITLE,  # output directory
+            save_total_limit=args.save_total_limit,  # number of total save model.
+            save_steps=args.save_steps,  # model saving step.
+            num_train_epochs=args.epochs,  # total number of training epochs
+            learning_rate=args.lr,  # learning_rate
+            per_device_train_batch_size=args.train_batch_size,  # batch size per device during training
+            per_device_eval_batch_size=args.eval_batch_size,  # batch size for evaluation
+            warmup_steps=args.warmup_steps,  # number of warmup steps for learning rate scheduler
+            weight_decay=args.weight_decay,  # strength of weight decay
+            logging_dir=args.logging_dir + "/" + TITLE,  # directory for storing logs
+            logging_steps=args.logging_steps,  # log saving step.
+            evaluation_strategy=args.evaluation_strategy,  # evaluation strategy to adopt during training
+            # `no`: No evaluation during training.
+            # `steps`: Evaluate every `eval_steps`.
+            # `epoch`: Evaluate every end of epoch.
+            eval_steps=args.eval_steps,  # evaluation step.
+            load_best_model_at_end=True,
+            dataloader_num_workers=4,
+        )
         trainer = Trainer(
             # the instantiated 🤗 Transformers model to be trained
             model=model,
-            args=training_args,                     # training arguments, defined above
-            train_dataset=RE_train_dataset,         # training dataset
-            eval_dataset=RE_dev_dataset,            # evaluation dataset
-            compute_metrics=compute_metrics         # define metrics function
+            args=training_args,  # training arguments, defined above
+            train_dataset=RE_train_dataset,  # training dataset
+            eval_dataset=RE_dev_dataset,  # evaluation dataset
+            compute_metrics=compute_metrics,  # define metrics function
         )
 
         # train model
         trainer.train()
-        model.save_pretrained(args.save_name+TITLE+'/'+'Fold'+str(fold))
+        model.save_pretrained(args.save_name + TITLE + "/" + "Fold" + str(fold))
 
         del model, trainer, training_args
         torch.cuda.empty_cache()
@@ -203,47 +243,115 @@ def main(args):
     # train with args
     train(args)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     # seed and model args
-    parser.add_argument('--seed', type=int, default=42, help='seed value (default: 42)')
-    parser.add_argument('--model', type=str, default='klue/roberta-base', help='model type (default: klue/roberta-base)')
+    parser.add_argument("--seed", type=int, default=42, help="seed value (default: 42)")
+    parser.add_argument(
+        "--model",
+        type=str,
+        default="klue/roberta-base",
+        help="model type (default: klue/roberta-base)",
+    )
 
     # train args
-    parser.add_argument('--save_total_limit', type=int, default=5e-5, help='number of total save model (default: 5)')
-    parser.add_argument('--save_steps', type=int, default=500, help='model saving step (default: 5)')
+    parser.add_argument(
+        "--save_total_limit",
+        type=int,
+        default=5e-5,
+        help="number of total save model (default: 5)",
+    )
+    parser.add_argument(
+        "--save_steps", type=int, default=500, help="model saving step (default: 5)"
+    )
 
-    parser.add_argument('--epochs', type=int, default=3, help='number of epochs to train (default: 3)')
-    parser.add_argument('--lr', type=float, default=5e-5, help='learning rate (default: 5e-5)')
+    parser.add_argument(
+        "--epochs", type=int, default=3, help="number of epochs to train (default: 3)"
+    )
+    parser.add_argument(
+        "--lr", type=float, default=5e-5, help="learning rate (default: 5e-5)"
+    )
 
-    parser.add_argument('--train_batch_size', type=int, default=64, help='input batch size for training (default: 64)')
-    parser.add_argument('--eval_batch_size', type=int, default=64, help='input batch size for validing (default: 64)')
+    parser.add_argument(
+        "--train_batch_size",
+        type=int,
+        default=64,
+        help="input batch size for training (default: 64)",
+    )
+    parser.add_argument(
+        "--eval_batch_size",
+        type=int,
+        default=64,
+        help="input batch size for validing (default: 64)",
+    )
 
-    parser.add_argument('--warmup_steps', type=int, default=500, help='strength of weight decay (default: 200)')
-    parser.add_argument('--weight_decay', type=float, default=0.01, help='number of total save model (default: 0.01)')
+    parser.add_argument(
+        "--warmup_steps",
+        type=int,
+        default=500,
+        help="strength of weight decay (default: 200)",
+    )
+    parser.add_argument(
+        "--weight_decay",
+        type=float,
+        default=0.01,
+        help="number of total save model (default: 0.01)",
+    )
 
-    parser.add_argument('--logging_dir', type=str, default='./logs', help='directory for storing logs (default: ./logs)')
-    parser.add_argument('--logging_steps', type=int, default=100, help='log saving step (default: 100)')
+    parser.add_argument(
+        "--logging_dir",
+        type=str,
+        default="./logs",
+        help="directory for storing logs (default: ./logs)",
+    )
+    parser.add_argument(
+        "--logging_steps", type=int, default=100, help="log saving step (default: 100)"
+    )
 
-    parser.add_argument('--evaluation_strategy', type=str, default='steps', help='''evaluation strategy to adopt during training
-                                                                                    `no`: No evaluation during training.
-                                                                                    `steps`: Evaluate every `eval_steps`.
-                                                                                    `epoch`: Evaluate every end of epoch.''')
-    parser.add_argument('--eval_steps', type=int, default=500, help='evaluation step (default: 500)')
-    parser.add_argument('--save_name', type=str, default='./best_model', help='model save at {save_name}')
+    parser.add_argument(
+        "--evaluation_strategy",
+        type=str,
+        default="steps",
+        help="""evaluation strategy to adopt during training
+                `no`: No evaluation during training.
+                `steps`: Evaluate every `eval_steps`.
+                `epoch`: Evaluate every end of epoch.""",
+    )
+    parser.add_argument(
+        "--eval_steps", type=int, default=500, help="evaluation step (default: 500)"
+    )
+    parser.add_argument(
+        "--save_name",
+        type=str,
+        default="./best_model",
+        help="model save at {save_name}",
+    )
 
     # directory args
-    parser.add_argument('--output_dir', type=str, default='./results', help='output directory (default: ./results)')
-    parser.add_argument('--fold_num', type=int, default=5, help='k in the k-fold cross validation (default: 5)')
-    parser.add_argument('--title', type=str, default= None, help='set folder name (default: model name)')
+    parser.add_argument(
+        "--output_dir",
+        type=str,
+        default="./results",
+        help="output directory (default: ./results)",
+    )
+    parser.add_argument(
+        "--fold_num",
+        type=int,
+        default=5,
+        help="k in the k-fold cross validation (default: 5)",
+    )
+    parser.add_argument(
+        "--title", type=str, default=None, help="set folder name (default: model name)"
+    )
 
     # parser.add_argument('--tokenizer', type=str, default='steps', help='''select tokenizer
     #                                                                      klue/roberta-base: AutoTokenizer.from_pretrained(MODEL_NAME).
     #                                                                      ''')
 
     args = parser.parse_args()
-    print('--- Args List ---')
+    print("--- Args List ---")
     print(args)
 
     main(args)
