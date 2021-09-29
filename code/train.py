@@ -82,10 +82,10 @@ def label_to_num(label):
     num_label.append(dict_label_to_num[v])
   return num_label
 
-def train():
+def train(args):
   # load model and tokenizer
   # MODEL_NAME = "bert-base-uncased"
-  MODEL_NAME = "klue/roberta-base"
+  MODEL_NAME = args.model # defalut : klue/roberta-base
   # MODEL_NAME = "xlm-roberta-large"
   # MODEL_NAME = "roberta-large"
 
@@ -130,22 +130,22 @@ def train():
   # 사용한 option 외에도 다양한 option들이 있습니다.
   # https://huggingface.co/transformers/main_classes/trainer.html#trainingarguments 참고해주세요.
   training_args = TrainingArguments(
-    output_dir='./results',           # output directory
-    save_total_limit=5,               # number of total save model.
-    save_steps=500,                   # model saving step.
-    num_train_epochs=3,               # total number of training epochs
-    learning_rate=5e-5,               # learning_rate
-    per_device_train_batch_size=16,   # batch size per device during training
-    per_device_eval_batch_size=16,    # batch size for evaluation
-    warmup_steps=500,                 # number of warmup steps for learning rate scheduler
-    weight_decay=0.01,                # strength of weight decay
-    logging_dir='./logs',             # directory for storing logs
-    logging_steps=100,                # log saving step.
-    evaluation_strategy='steps',      # evaluation strategy to adopt during training
+    output_dir=args.output_dir,           # output directory
+    save_total_limit=args.save_total_limit,               # number of total save model.
+    save_steps=args.save_steps,                   # model saving step.
+    num_train_epochs=args.epochs,               # total number of training epochs
+    learning_rate=args.lr,               # learning_rate
+    per_device_train_batch_size=args.train_batch_size,   # batch size per device during training
+    per_device_eval_batch_size=args.eval_batch_size,    # batch size for evaluation
+    warmup_steps=args.warmup_steps,                 # number of warmup steps for learning rate scheduler
+    weight_decay=args.weight_decay,                # strength of weight decay
+    logging_dir=args.logging_dir,             # directory for storing logs
+    logging_steps=args.logging_steps,                # log saving step.
+    evaluation_strategy=args.evaluation_strategy,      # evaluation strategy to adopt during training
                                         # `no`: No evaluation during training.
                                         # `steps`: Evaluate every `eval_steps`.
                                         # `epoch`: Evaluate every end of epoch.
-    eval_steps = 500,                 # evaluation step.
+    eval_steps = args.eval_steps,                 # evaluation step.
     load_best_model_at_end = True 
   )
   trainer = Trainer(
@@ -158,19 +158,49 @@ def train():
 
   # train model
   trainer.train()
-  model.save_pretrained('./best_model')
+  model.save_pretrained(args.save_name)
 
 def main(args):
-  seed_everything()
+  seed_everything(args.seed)
 
   # train with args
-  train()
+  train(args)
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
 
-  # Data and model checkpoints directories
+  # seed and model args
   parser.add_argument('--seed', type=int, default=42, help='seed value (default: 42)')
+  parser.add_argument('--model', type=str, default='klue/roberta-base', help='model type (default: klue/roberta-base)')
+
+  # train args
+  parser.add_argument('--output_dir', type=str, default='./results', help='output directory (default: ./results)')
+  parser.add_argument('--save_total_limit', type=int, default=5e-5, help='number of total save model (default: 5)')
+  parser.add_argument('--save_steps', type=int, default=500, help='model saving step (default: 5)')
+
+  parser.add_argument('--epochs', type=int, default=3, help='number of epochs to train (default: 3)')
+  parser.add_argument('--lr', type=float, default=5e-5, help='learning rate (default: 5e-5)')
+
+  parser.add_argument('--train_batch_size', type=int, default=64, help='input batch size for training (default: 64)')
+  parser.add_argument('--eval_batch_size', type=int, default=64, help='input batch size for validing (default: 64)')
+
+  parser.add_argument('--warmup_steps', type=int, default=500, help='strength of weight decay (default: 200)')
+  parser.add_argument('--weight_decay', type=float, default=0.01, help='number of total save model (default: 0.01)')
+
+  parser.add_argument('--logging_dir', type=str, default='./logs', help='directory for storing logs (default: ./logs)')
+  parser.add_argument('--logging_steps', type=int, default=100, help='log saving step (default: 100)')
+
+  parser.add_argument('--evaluation_strategy', type=str, default='steps', help='''evaluation strategy to adopt during training
+                                                                                  `no`: No evaluation during training.
+                                                                                  `steps`: Evaluate every `eval_steps`.
+                                                                                  `epoch`: Evaluate every end of epoch.''')
+  parser.add_argument('--eval_steps', type=int, default=500, help='evaluation step (default: 500)')
+  parser.add_argument('--save_name', type=str, default='./best_model', help='model save at {save_name}')
+
+  #parser.add_argument('--fold_num', type=int, default=10, help='k in the k-fold cross validation (default: 10)')
+  #parser.add_argument('--tokenizer', type=str, default='steps', help='''select tokenizer
+  #                                                                      klue/roberta-base: AutoTokenizer.from_pretrained(MODEL_NAME).
+  #                                                                      ''')
 
   args = parser.parse_args()
   print('--- Args List ---')
