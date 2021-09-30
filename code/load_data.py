@@ -10,7 +10,7 @@ from pandas import DataFrame
 from sklearn.model_selection import StratifiedKFold
 import numpy as np
 from torch.utils.data import DataLoader
-
+from collections import Counter
 
 class RE_Dataset(torch.utils.data.Dataset):
     """Dataset 구성을 위한 class."""
@@ -36,7 +36,6 @@ class RE_Dataset(torch.utils.data.Dataset):
 def preprocessing_test_dataset(dataset: pd.DataFrame):
     """
     A Preprocessing function to convert original test dataset to useful one
-
     :param dataset (DataFrame): an original test dataset from train.csv
     :return:
     """
@@ -63,7 +62,6 @@ def preprocessing_test_dataset(dataset: pd.DataFrame):
 def preprocessing_dataset(dataset: pd.DataFrame):
     """
     A Preprocessing function to convert original dataset to useful one
-
     :param dataset (DataFrame): an original train dataset from train.csv
     :return:
     """
@@ -75,10 +73,30 @@ def preprocessing_dataset(dataset: pd.DataFrame):
 
         subject_entity.append(i)
         object_entity.append(j)
+
+    # 단어 빈도 수 저장
+    new_df = []
+    for idx, df in enumerate(dataset['sentence']):
+
+        new_df.extend(df.split(' '))
+
+    word_dict = Counter(new_df)
+
+    new_sentences = []
+    # sentence 다시 구성
+    for sent in dataset['sentence']:
+        new_sent = []
+        for s in sent.split(' '):
+            if word_dict[s] > 3:
+                
+                new_sent.append(s)
+        new_sentences.append(" ".join(new_sent))
+
+
     out_dataset = pd.DataFrame(
         {
             "id": dataset["id"],
-            "sentence": dataset["sentence"],
+            "sentence": new_sentences,
             "subject_entity": subject_entity,
             "object_entity": object_entity,
             "label": dataset["label"],
@@ -101,7 +119,6 @@ def preprocessing_dataset(dataset: pd.DataFrame):
 def load_test_data(dataset_dir: str):
     """
     Load original dataset from test.csv
-
     :param dataset_dir (str): a path of test.csv
     :return:
     """
@@ -113,7 +130,6 @@ def load_test_data(dataset_dir: str):
 def load_data(dataset_dir: str):
     """
     Load original dataset from train.csv
-
     :param dataset_dir (str): a path of train.csv
     :return:
     """
@@ -156,14 +172,11 @@ def make_stratifiedkfold(
 ):
     """#### raw_train dataset을 stratifiedkfold로 나눠 주는 함수
     raw data -> stratify 한 fklod로 만들어줌
-
     Example:
-
         >>> flods = make_stratifiedkfold(조건에 맞춰 arg 지정)
         >>> for fold, (trn_idx, val_idx) in enumerate(folds):
         >>>     train_df = raw_train.loc[trn_idx, :].reset_index(drop=True)
         >>>     valid_df = raw_train.loc[val_idx, :].reset_index(drop=True)
-
         >>>     train_dataset = DataSet(train_df)
         >>>     valid_dataset = DataSet(valid_df)
     Args:
@@ -172,7 +185,6 @@ def make_stratifiedkfold(
         n_splits (int): fold 갯수
         shuffle (bool): 섞을 것인지
         seed (int): Random seed
-
     Returns:
         folds (Generator): (train idx, valid idx) 쌍을 생성
     """
@@ -185,12 +197,10 @@ def make_stratifiedkfold(
 def make_train_df(raw_train: DataFrame, train_index: int, valid_index: int):
     """
     `make_stratifiedkfold()` 의 (train idx, valid idx) 쌍에 따라 Stratified 한 train_df, valid_df 생성
-
     Args:
         raw_train (DataFrame): origin `train.csv` dataframe
         train_index (int): `make_stratifiedkfold()` 의 train idx
         valid_index (int): `make_stratifiedkfold()` 의 valid idx
-
     Returns:
         train_df, valid_df: Dataset에 넣을 Dataframe
     """

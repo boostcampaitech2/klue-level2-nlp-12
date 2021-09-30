@@ -95,26 +95,23 @@ def main(args):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     # load tokenizer
     # Tokenizer_NAME = "klue/bert-base"
-    Tokenizer_NAME = "klue/roberta-base"
+    Tokenizer_NAME = args.model
     tokenizer = AutoTokenizer.from_pretrained(Tokenizer_NAME)
-
-    # load my model
-    MODEL_NAME = args.model_dir  # model dir.
-    model = AutoModelForSequenceClassification.from_pretrained(args.model_dir)
-    model.parameters
-    model.to(device)
 
     # load test datset
     test_dataset_dir = "/opt/ml/dataset/test/test_data.csv"
     test_id, test_dataset, test_label = load_test_dataset(test_dataset_dir, tokenizer)
     Re_test_dataset = RE_Dataset(test_dataset, test_label)
 
-    # load custom test dataset
-    custom_test_dataset_dir = "/opt/ml/dataset/train/custom_test.csv"
-    custom_test_id, custom_test_dataset, custom_test_label = custom_load_test_dataset(
-        custom_test_dataset_dir, tokenizer
-    )
-    custom_Re_test_dataset = RE_Dataset(custom_test_dataset, custom_test_label)
+    if args.use_data_helper:
+        # load custom test dataset
+        custom_test_dataset_dir = "/opt/ml/dataset/train/custom_test.csv"
+        (
+            custom_test_id,
+            custom_test_dataset,
+            custom_test_label,
+        ) = custom_load_test_dataset(custom_test_dataset_dir, tokenizer)
+        custom_Re_test_dataset = RE_Dataset(custom_test_dataset, custom_test_label)
 
     if args.ensemble:
         # ensemble 폴더에 어셈블할 데이터를 폴더채로 넣으시면 됩니다
@@ -131,18 +128,19 @@ def main(args):
             pred_answer, output_prob = inference(
                 model, Re_test_dataset, device
             )  # model에서 class 추론
-            custom_pred_answer, custom_output_prob = inference(
-                model, custom_Re_test_dataset, device
-            )  # model에서 class 추론
-
             output_probs.append(np.array(output_prob))
-            custom_output_probs.append(np.array(custom_output_prob))
+            if args.use_data_helper:
+                custom_pred_answer, custom_output_prob = inference(
+                    model, custom_Re_test_dataset, device
+                )  # model에서 class 추론
+                custom_output_probs.append(np.array(custom_output_prob))
 
         if args.ensemble_option == "mean":
             mean_prob = np.mean(output_probs, axis=0)
-            custom_mean_prob = np.mean(custom_output_probs, axis=0)
             pred_answer = np.argmax(mean_prob, axis=-1)
-            custom_pred_answer = np.argmax(custom_mean_prob, axis=-1)
+            if args.use_data_helper:
+                custom_mean_prob = np.mean(custom_output_probs, axis=0)
+                custom_pred_answer = np.argmax(custom_mean_prob, axis=-1)
 
         # custom predict answer
         # 숫자로 된 class를 원래 문자열 라벨로 변환.
@@ -150,16 +148,21 @@ def main(args):
         # custom_pred_answer = num_to_label(custom_pred_answer)
 
     else:
+        # load my model
+        MODEL_NAME = args.model_dir  # model dir.
+        model = AutoModelForSequenceClassification.from_pretrained(args.model_dir)
+        model.parameters
+        model.to(device)
         # predict answer
         pred_answer, output_prob = inference(
             model, Re_test_dataset, device
         )  # model에서 class 추론
         pred_answer = num_to_label(pred_answer)  # 숫자로 된 class를 원래 문자열 라벨로 변환.
-
-        # custom predict answer
-        custom_pred_answer, custom_output_prob = inference(
-            model, custom_Re_test_dataset, device
-        )  # model에서 class 추론
+        if args.use_data_helper:
+            # custom predict answer
+            custom_pred_answer, custom_output_prob = inference(
+                model, custom_Re_test_dataset, device
+            )  # model에서 class 추론
         # 숫자로 된 class를 원래 문자열 라벨로 변환.
         # custom_pred_answer = num_to_label(custom_pred_answer)
 
@@ -173,7 +176,8 @@ def main(args):
     # 최종적으로 완성된 예측한 라벨 csv 파일 형태로 저장.
     output.to_csv("./prediction/submission.csv", index=False)
     #### 필수!! ##############################################
-    print(classification_report(custom_test_label, custom_pred_answer))
+    if args.use_data_helper:
+        print(classification_report(custom_test_label, custom_pred_answer))
     print("---- Finish! ----")
 
 
@@ -181,11 +185,24 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     # model dir
-    parser.add_argument("--model_dir", type=str, default="./best_model")
+    parser.add_argument(
+        "--model_dir", type=str, default="./best_model", help="defualt : ./best_model"
+    )
+    parser.add_argument("--model", type=str, default="klue/roberta-base")
     parser.add_argument("--ensemble", type=bool, default=False)
     parser.add_argument(
-        "--ensemble_option", type=str, default="mean", help="mean, hard_voting"
+        "--ensemble_option",
+        type=str,
+        default="mean",
+        help="mean, hard_voting  (default : mean)",
     )
+    parser.add_argument(
+        "--use_data_helper",
+        type=bool,
+        default=False,
+        help="Whether to use data helper (default : False)",
+    )
+
     args = parser.parse_args()
     print(args)
     main(args)

@@ -1,0 +1,767 @@
+2021-09-30 04:18:12,474 INFO    MainThread:15980 [internal.py:wandb_internal():86] W&B internal server running at pid: 15980, started at: 2021-09-30 04:18:12.473824
+2021-09-30 04:18:12,477 DEBUG   SenderThread:15980 [sender.py:send():185] send: header
+2021-09-30 04:18:12,478 INFO    WriterThread:15980 [datastore.py:open_for_write():77] open: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/run-23p8mbhf.wandb
+2021-09-30 04:18:12,478 DEBUG   HandlerThread:15980 [handler.py:handle_request():126] handle_request: check_version
+2021-09-30 04:18:12,478 DEBUG   SenderThread:15980 [sender.py:send_request():199] send_request: check_version
+2021-09-30 04:18:12,518 DEBUG   SenderThread:15980 [sender.py:send():185] send: run
+2021-09-30 04:18:12,741 INFO    SenderThread:15980 [dir_watcher.py:__init__():169] watching files in: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files
+2021-09-30 04:18:12,742 INFO    SenderThread:15980 [sender.py:_start_run_threads():746] run started: 23p8mbhf with start time 1632975491
+2021-09-30 04:18:12,742 DEBUG   HandlerThread:15980 [handler.py:handle_request():126] handle_request: run_start
+2021-09-30 04:18:12,742 DEBUG   SenderThread:15980 [sender.py:send():185] send: summary
+2021-09-30 04:18:12,744 INFO    SenderThread:15980 [sender.py:_save_file():879] saving file wandb-summary.json with policy end
+2021-09-30 04:18:13,746 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_created():217] file/dir created: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/wandb-summary.json
+2021-09-30 04:18:14,298 DEBUG   HandlerThread:15980 [meta.py:__init__():40] meta init
+2021-09-30 04:18:14,299 DEBUG   HandlerThread:15980 [meta.py:__init__():54] meta init done
+2021-09-30 04:18:14,299 DEBUG   HandlerThread:15980 [meta.py:probe():211] probe
+2021-09-30 04:18:14,305 DEBUG   HandlerThread:15980 [meta.py:_setup_git():201] setup git
+2021-09-30 04:18:14,330 DEBUG   HandlerThread:15980 [meta.py:_setup_git():208] setup git done
+2021-09-30 04:18:14,330 DEBUG   HandlerThread:15980 [meta.py:_save_pip():58] save pip
+2021-09-30 04:18:14,330 DEBUG   HandlerThread:15980 [meta.py:_save_pip():72] save pip done
+2021-09-30 04:18:14,330 DEBUG   HandlerThread:15980 [meta.py:_save_conda():79] save conda
+2021-09-30 04:18:14,748 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_created():217] file/dir created: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/requirements.txt
+2021-09-30 04:18:14,749 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_created():217] file/dir created: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/conda-environment.yaml
+2021-09-30 04:18:17,749 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_created():217] file/dir created: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:18:19,610 DEBUG   HandlerThread:15980 [meta.py:_save_conda():87] save conda done
+2021-09-30 04:18:19,611 DEBUG   HandlerThread:15980 [meta.py:probe():249] probe done
+2021-09-30 04:18:19,613 DEBUG   HandlerThread:15980 [handler.py:handle_request():126] handle_request: stop_status
+2021-09-30 04:18:19,613 DEBUG   SenderThread:15980 [sender.py:send_request():199] send_request: stop_status
+2021-09-30 04:18:19,749 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/conda-environment.yaml
+2021-09-30 04:18:19,750 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_created():217] file/dir created: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/wandb-metadata.json
+2021-09-30 04:18:19,800 DEBUG   SenderThread:15980 [sender.py:send():185] send: config
+2021-09-30 04:18:19,800 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:18:19,800 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:18:19,801 WARNING SenderThread:15980 [sender.py:send_metric():837] Seen metric with glob (shouldnt happen)
+2021-09-30 04:18:19,801 DEBUG   SenderThread:15980 [sender.py:send():185] send: files
+2021-09-30 04:18:19,801 INFO    SenderThread:15980 [sender.py:_save_file():879] saving file wandb-metadata.json with policy now
+2021-09-30 04:18:20,472 INFO    Thread-11 :15980 [upload_job.py:push():137] Uploaded file /tmp/tmpdwfbv3mhwandb/21qcmkj8-wandb-metadata.json
+2021-09-30 04:18:20,750 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:18:22,750 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:18:24,751 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:18:26,752 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:18:28,753 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:18:30,753 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:18:32,754 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:18:34,755 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:18:34,803 DEBUG   HandlerThread:15980 [handler.py:handle_request():126] handle_request: stop_status
+2021-09-30 04:18:34,803 DEBUG   SenderThread:15980 [sender.py:send_request():199] send_request: stop_status
+2021-09-30 04:18:36,756 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:18:38,756 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:18:40,757 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:18:42,451 DEBUG   SenderThread:15980 [sender.py:send():185] send: stats
+2021-09-30 04:18:42,758 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:18:43,758 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/config.yaml
+2021-09-30 04:18:44,758 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:18:46,759 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:18:48,760 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:18:49,990 DEBUG   HandlerThread:15980 [handler.py:handle_request():126] handle_request: stop_status
+2021-09-30 04:18:49,990 DEBUG   SenderThread:15980 [sender.py:send_request():199] send_request: stop_status
+2021-09-30 04:18:50,760 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:18:52,761 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:18:54,762 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:18:56,762 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:18:58,763 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:19:00,764 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:19:02,765 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:19:04,765 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:19:04,818 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,818 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,818 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,818 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,818 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,819 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,819 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,819 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,819 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,819 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,819 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,819 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,819 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,819 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,819 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,819 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,819 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,819 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,819 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,820 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,820 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,820 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,820 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,820 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,820 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,820 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,820 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,820 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,820 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,820 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,820 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,820 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,821 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,821 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,821 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,821 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,821 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,821 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,821 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,821 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,821 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,821 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,821 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,821 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,822 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,822 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,822 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,822 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,822 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,822 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,822 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,822 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,822 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,822 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,822 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,822 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,823 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,823 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,823 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,823 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,823 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,823 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,823 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,824 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,824 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,824 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,824 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,824 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,824 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,824 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,824 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,824 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,824 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,824 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,824 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,825 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,825 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,825 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,825 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,825 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,825 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,825 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,825 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,825 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,825 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,825 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,825 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,825 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,825 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,825 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,826 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,826 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,826 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,826 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,826 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,826 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,826 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,826 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,826 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,826 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,826 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,826 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,826 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,826 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,827 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,827 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,827 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,827 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,827 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,827 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,827 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,827 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,827 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,827 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,827 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,827 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,827 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,828 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,828 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,828 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,828 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,828 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,828 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,828 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,828 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,828 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,828 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,828 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,828 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,828 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,829 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,829 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,829 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,829 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,829 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,829 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,829 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,829 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,829 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,829 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,829 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,829 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,830 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,830 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,830 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,830 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,830 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,830 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,830 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,830 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,830 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,830 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,830 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,830 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,831 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,831 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,831 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,831 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,831 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,831 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,831 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,831 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,831 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,831 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,831 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,831 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,832 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,832 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,832 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,832 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,832 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,832 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,832 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,832 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,832 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,832 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,832 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,832 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,833 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,833 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,833 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,833 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,833 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,833 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,833 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,833 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,833 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,833 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,833 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,833 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,834 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,834 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,834 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,834 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,834 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,834 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,834 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,834 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,834 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,834 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,834 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,834 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,835 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,835 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,835 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,835 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,835 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,835 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,840 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,852 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,852 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,852 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,852 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,852 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,863 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,873 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,873 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,873 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,873 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,873 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,874 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,874 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,874 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,874 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,874 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,874 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,874 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,874 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,874 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,874 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,875 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,875 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,875 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,875 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,875 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,875 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,876 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,877 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,877 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,877 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,877 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,877 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,877 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,877 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,877 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,877 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,877 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,877 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,878 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,878 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,878 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,878 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,878 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,878 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,878 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,878 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,878 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,878 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,878 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,878 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,878 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,878 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,878 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,879 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,879 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,879 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,879 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,879 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,879 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,879 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,879 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,879 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,879 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,879 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,879 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,879 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,879 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,880 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,880 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,880 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,880 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,880 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,880 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,880 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,880 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,880 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,880 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,880 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,880 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,880 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,880 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,881 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,881 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,881 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,881 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,881 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,881 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,881 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,881 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,881 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,881 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,881 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,881 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,881 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,881 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,882 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,882 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,882 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,882 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,882 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,882 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,882 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,882 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,882 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,882 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,882 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,882 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,882 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,882 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,882 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,883 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,883 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,883 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,883 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,883 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,883 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,883 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,883 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,883 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,883 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,883 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,883 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,883 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,883 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,884 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,884 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,884 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,884 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,884 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,884 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,884 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,884 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,884 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,884 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,884 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,884 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,884 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,885 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,885 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,885 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,885 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,885 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,885 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,885 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,887 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,887 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,887 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,888 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,888 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,888 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,888 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,888 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,888 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,888 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,888 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,888 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,888 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,888 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,888 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,888 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,888 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,889 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,889 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,889 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,889 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,889 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,889 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,889 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,889 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,889 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,889 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,889 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,889 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,889 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,889 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,890 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,890 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,890 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,890 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,890 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,890 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,890 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,890 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,890 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,890 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,890 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,890 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,890 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,890 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,890 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,891 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,891 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,891 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,891 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,891 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,891 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,891 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,891 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,891 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,891 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,891 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,891 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,891 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,891 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,892 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,892 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,892 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,892 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,892 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,892 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,892 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,892 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,892 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,892 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,892 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,892 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,892 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,892 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,893 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,893 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,893 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,893 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,893 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,893 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,893 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,893 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,893 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,893 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,893 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,893 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,893 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,893 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,893 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,894 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,894 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,894 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,894 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,894 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,894 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,894 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,894 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,894 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,894 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,894 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,894 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,894 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,894 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,895 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,895 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,895 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,895 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,895 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,895 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,895 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,895 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,895 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,895 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,895 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,895 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,896 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,896 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,896 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,896 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,896 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,896 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,896 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,896 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,896 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,896 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,896 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,896 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,896 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,896 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,897 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,897 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,897 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,897 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,897 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,897 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,897 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,897 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,897 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,897 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,897 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,897 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,897 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,897 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,898 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,898 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,898 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,898 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,898 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,898 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,898 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,898 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,898 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,898 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,898 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,898 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,898 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,898 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,898 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,899 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,899 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,899 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,899 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,899 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,899 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,899 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,899 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,899 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,899 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,899 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,899 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,899 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,899 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,900 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,900 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,900 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,900 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,900 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,900 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,900 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,900 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,900 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,900 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,900 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,900 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,900 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,900 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,901 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,901 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,901 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,901 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,901 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,901 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,901 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,901 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,901 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,901 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,901 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,901 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,901 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,901 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,901 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,902 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,902 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,902 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,902 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,902 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,902 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,902 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,902 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,902 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,902 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,902 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,902 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,902 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,902 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,902 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,903 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,903 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,903 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,903 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,903 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,903 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,903 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,903 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,903 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,903 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,903 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,903 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,903 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,904 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,904 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,904 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,904 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,904 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,904 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,904 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,904 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,904 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,904 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,904 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,904 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,904 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,904 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,905 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,905 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,905 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,905 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,905 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,905 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,905 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,905 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,905 DEBUG   SenderThread:15980 [sender.py:send():185] send: metric
+2021-09-30 04:19:04,905 DEBUG   SenderThread:15980 [sender.py:send():185] send: history
+2021-09-30 04:19:04,929 DEBUG   SenderThread:15980 [sender.py:send():185] send: summary
+2021-09-30 04:19:04,956 INFO    SenderThread:15980 [sender.py:_save_file():879] saving file wandb-summary.json with policy end
+2021-09-30 04:19:05,182 DEBUG   HandlerThread:15980 [handler.py:handle_request():126] handle_request: stop_status
+2021-09-30 04:19:05,183 DEBUG   SenderThread:15980 [sender.py:send_request():199] send_request: stop_status
+2021-09-30 04:19:05,766 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/wandb-summary.json
+2021-09-30 04:19:06,766 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:19:08,767 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:19:10,768 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:19:12,596 DEBUG   SenderThread:15980 [sender.py:send():185] send: stats
+2021-09-30 04:19:12,768 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:19:14,769 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:19:14,769 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/config.yaml
+2021-09-30 04:19:16,770 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:19:18,771 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:19:20,371 DEBUG   HandlerThread:15980 [handler.py:handle_request():126] handle_request: stop_status
+2021-09-30 04:19:20,371 DEBUG   SenderThread:15980 [sender.py:send_request():199] send_request: stop_status
+2021-09-30 04:19:20,771 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:19:22,772 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:19:24,773 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:19:26,773 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:19:28,774 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:19:30,775 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:19:32,775 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:19:34,776 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:19:35,560 DEBUG   HandlerThread:15980 [handler.py:handle_request():126] handle_request: stop_status
+2021-09-30 04:19:35,561 DEBUG   SenderThread:15980 [sender.py:send_request():199] send_request: stop_status
+2021-09-30 04:19:36,777 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:19:38,778 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:19:40,778 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:19:42,752 DEBUG   SenderThread:15980 [sender.py:send():185] send: stats
+2021-09-30 04:19:42,779 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:19:44,780 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:19:46,780 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:19:48,781 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:19:50,765 DEBUG   HandlerThread:15980 [handler.py:handle_request():126] handle_request: stop_status
+2021-09-30 04:19:50,766 DEBUG   SenderThread:15980 [sender.py:send_request():199] send_request: stop_status
+2021-09-30 04:19:50,785 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:19:51,152 DEBUG   SenderThread:15980 [sender.py:send():185] send: history
+2021-09-30 04:19:51,196 DEBUG   SenderThread:15980 [sender.py:send():185] send: summary
+2021-09-30 04:19:51,221 INFO    SenderThread:15980 [sender.py:_save_file():879] saving file wandb-summary.json with policy end
+2021-09-30 04:19:51,785 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/wandb-summary.json
+2021-09-30 04:19:52,786 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:19:54,787 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:19:56,787 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:19:58,788 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:20:00,789 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:20:02,790 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:20:04,790 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:20:05,956 DEBUG   HandlerThread:15980 [handler.py:handle_request():126] handle_request: stop_status
+2021-09-30 04:20:05,957 DEBUG   SenderThread:15980 [sender.py:send_request():199] send_request: stop_status
+2021-09-30 04:20:06,791 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:20:08,792 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:20:10,793 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:20:12,793 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:20:12,895 DEBUG   SenderThread:15980 [sender.py:send():185] send: stats
+2021-09-30 04:20:14,794 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:20:16,795 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:20:18,795 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:20:20,796 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:20:21,141 DEBUG   HandlerThread:15980 [handler.py:handle_request():126] handle_request: stop_status
+2021-09-30 04:20:21,141 DEBUG   SenderThread:15980 [sender.py:send_request():199] send_request: stop_status
+2021-09-30 04:20:22,797 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:20:24,798 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:20:26,799 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:20:28,799 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:20:30,800 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:20:32,801 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:20:34,802 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:20:36,350 DEBUG   HandlerThread:15980 [handler.py:handle_request():126] handle_request: stop_status
+2021-09-30 04:20:36,350 DEBUG   SenderThread:15980 [sender.py:send_request():199] send_request: stop_status
+2021-09-30 04:20:36,802 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:20:37,655 DEBUG   SenderThread:15980 [sender.py:send():185] send: history
+2021-09-30 04:20:37,704 DEBUG   SenderThread:15980 [sender.py:send():185] send: summary
+2021-09-30 04:20:37,727 INFO    SenderThread:15980 [sender.py:_save_file():879] saving file wandb-summary.json with policy end
+2021-09-30 04:20:37,803 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/wandb-summary.json
+2021-09-30 04:20:38,803 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:20:40,804 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:20:42,804 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:20:43,054 DEBUG   SenderThread:15980 [sender.py:send():185] send: stats
+2021-09-30 04:20:44,805 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:20:46,806 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:20:48,807 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:20:50,807 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:20:51,542 DEBUG   HandlerThread:15980 [handler.py:handle_request():126] handle_request: stop_status
+2021-09-30 04:20:51,542 DEBUG   SenderThread:15980 [sender.py:send_request():199] send_request: stop_status
+2021-09-30 04:20:52,808 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:20:54,809 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:20:56,809 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:20:58,810 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:21:00,811 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:21:02,812 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:21:04,813 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log
+2021-09-30 04:21:06,729 DEBUG   HandlerThread:15980 [handler.py:handle_request():126] handle_request: stop_status
+2021-09-30 04:21:06,729 DEBUG   SenderThread:15980 [sender.py:send_request():199] send_request: stop_status
+2021-09-30 04:21:06,813 INFO    Thread-8  :15980 [dir_watcher.py:_on_file_modified():230] file/dir modified: /opt/ml/klue-level2-nlp-12/code/wandb/run-20210930_041811-23p8mbhf/files/output.log

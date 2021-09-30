@@ -1,0 +1,44 @@
+  0%|                                                                                                    | 0/2436 [00:00<?, ?it/s]Traceback (most recent call last):
+  File "train.py", line 377, in <module>
+    main(args)
+  File "train.py", line 254, in main
+    train(args)
+  File "train.py", line 245, in train
+    trainer.train()
+  File "/opt/conda/lib/python3.8/site-packages/transformers/trainer.py", line 1284, in train
+    tr_loss += self.training_step(model, inputs)
+  File "/opt/conda/lib/python3.8/site-packages/transformers/trainer.py", line 1789, in training_step
+    loss = self.compute_loss(model, inputs)
+  File "/opt/conda/lib/python3.8/site-packages/transformers/trainer.py", line 1821, in compute_loss
+    outputs = model(**inputs)
+  File "/opt/conda/lib/python3.8/site-packages/torch/nn/modules/module.py", line 727, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "/opt/conda/lib/python3.8/site-packages/transformers/models/roberta/modeling_roberta.py", line 1193, in forward
+    outputs = self.roberta(
+  File "/opt/conda/lib/python3.8/site-packages/torch/nn/modules/module.py", line 727, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "/opt/conda/lib/python3.8/site-packages/transformers/models/roberta/modeling_roberta.py", line 843, in forward
+    encoder_outputs = self.encoder(
+  File "/opt/conda/lib/python3.8/site-packages/torch/nn/modules/module.py", line 727, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "/opt/conda/lib/python3.8/site-packages/transformers/models/roberta/modeling_roberta.py", line 522, in forward
+    layer_outputs = layer_module(
+  File "/opt/conda/lib/python3.8/site-packages/torch/nn/modules/module.py", line 727, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "/opt/conda/lib/python3.8/site-packages/transformers/models/roberta/modeling_roberta.py", line 449, in forward
+    layer_output = apply_chunking_to_forward(
+  File "/opt/conda/lib/python3.8/site-packages/transformers/modeling_utils.py", line 2196, in apply_chunking_to_forward
+    return forward_fn(*input_tensors)
+  File "/opt/conda/lib/python3.8/site-packages/transformers/models/roberta/modeling_roberta.py", line 461, in feed_forward_chunk
+    intermediate_output = self.intermediate(attention_output)
+  File "/opt/conda/lib/python3.8/site-packages/torch/nn/modules/module.py", line 727, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "/opt/conda/lib/python3.8/site-packages/transformers/models/roberta/modeling_roberta.py", line 362, in forward
+    hidden_states = self.dense(hidden_states)
+  File "/opt/conda/lib/python3.8/site-packages/torch/nn/modules/module.py", line 727, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "/opt/conda/lib/python3.8/site-packages/torch/nn/modules/linear.py", line 93, in forward
+    return F.linear(input, self.weight, self.bias)
+  File "/opt/conda/lib/python3.8/site-packages/torch/nn/functional.py", line 1692, in linear
+    output = input.matmul(weight.t())
+RuntimeError: CUDA out of memory. Tried to allocate 96.00 MiB (GPU 0; 31.75 GiB total capacity; 783.16 MiB already allocated; 78.50 MiB free; 824.00 MiB reserved in total by PyTorch)

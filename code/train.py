@@ -41,7 +41,6 @@ TIME = korea_now()
 def seed_everything(seed: int = 42):
     """
     Fix all related seeds
-
     :param seed: 42 (default)
     :return:
     """
