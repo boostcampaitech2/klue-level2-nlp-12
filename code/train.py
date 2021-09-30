@@ -167,7 +167,7 @@ def train(args):
     # set StratifiedKFold
     folds = make_stratifiedkfold(raw_df, raw_df.label, KFLOD_NUM, True, SEED)
     for fold, (trn_idx, dev_idx) in enumerate(folds):
-        if not args.run_kflod:
+        if not args.run_kfold:
             if fold > 0:
                 break
         train_dataset, dev_dataset = make_train_df(raw_df, trn_idx, dev_idx)
@@ -284,8 +284,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "--model",
         type=str,
-        default="klue/roberta-small",
-        help="model type (default: klue/roberta-small)",
+        default="klue/roberta-base",
+        help="model type (default: klue/roberta-base)",
     )
 
     # train args
@@ -361,7 +361,7 @@ if __name__ == "__main__":
         help="model save at {save_name}",
     )
     parser.add_argument(
-        "--run_kflod",
+        "--run_kfold",
         type=bool,
         default=False,
         help="whether to use kfold(default: False)",

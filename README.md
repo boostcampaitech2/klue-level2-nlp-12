@@ -1,13 +1,13 @@
 # Team AI-it General Repo
 
 ## Contributor
-- 김재현
-- 박진영
-- 안성민
-- 양재욱
-- 이연걸
-- 조범준
-- 진혜원
+- 김재현/T2050
+- 박진영/T2096
+- 안성민/T2127
+- 양재욱/T2130
+- 이연걸/T2163
+- 조범준/T2211
+- 진혜원/T2217
 
 
 ## Daily Moderator Schedule
