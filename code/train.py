@@ -285,8 +285,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "--model",
         type=str,
-        default="klue/roberta-small",
-        help="model type (default: klue/roberta-small)",
+        default="klue/roberta-base",
+        help="model type (default: klue/roberta-base)",
     )
 
     # train args
