@@ -206,7 +206,7 @@ def train(args):
 
         # exit()
 
-        model.parameters
+        print(model.parameters)
         model.to(device)
 
         # 사용한 option 외에도 다양한 option들이 있습니다.
