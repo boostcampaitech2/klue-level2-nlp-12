@@ -1,6 +1,5 @@
 import pickle as pickle
 import os
-from pyexpat import model
 import pandas as pd
 import torch
 import sklearn
