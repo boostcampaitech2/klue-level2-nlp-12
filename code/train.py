@@ -7,7 +7,7 @@ import sklearn
 import numpy as np
 import random
 import argparse
-
+import wandb
 
 from sklearn.metrics import (
     accuracy_score,
@@ -208,7 +208,19 @@ def train(args):
 
         model.parameters
         model.to(device)
-
+        # wandb 사용 여부
+        if args.set_wandb:
+            reported_to = "wandb"
+            if args.wandb_title == None:
+                WANDB_PROJECT_NAME = args.title
+            else:
+                WANDB_PROJECT_NAME = args.wandb_title
+            if args.wandb_run_name == None:
+                RAN_NAME = TITLE + "-Fold" + str(fold)
+            wandb.init(project=WANDB_PROJECT_NAME, name=RAN_NAME)
+        else:
+            reported_to = None
+            RAN_NAME = None
         # 사용한 option 외에도 다양한 option들이 있습니다.
         # https://huggingface.co/transformers/main_classes/trainer.html#trainingarguments 참고해주세요.
 
@@ -231,6 +243,8 @@ def train(args):
             eval_steps=args.eval_steps,  # evaluation step.
             load_best_model_at_end=True,
             dataloader_num_workers=4,
+            report_to=reported_to,  # wandb사용
+            run_name=RAN_NAME,
         )
         trainer = Trainer(
             # the instantiated 🤗 Transformers model to be trained
@@ -246,11 +260,14 @@ def train(args):
         trainer.train()
         model.save_pretrained(args.save_name + "/" + TITLE + "-Fold" + str(fold))
 
+        if args.set_wandb:
+            wandb.finish()
         del model, trainer, training_args
         torch.cuda.empty_cache()
 
 
 def main(args):
+
     seed_everything(args.seed)
     train(args)
 
@@ -268,8 +285,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "--model",
         type=str,
-        default="klue/roberta-base",
-        help="model type (default: klue/roberta-base)",
+        default="klue/roberta-small",
+        help="model type (default: klue/roberta-small)",
     )
 
     # train args
@@ -280,7 +297,7 @@ if __name__ == "__main__":
         help="number of total save model (default: 5)",
     )
     parser.add_argument(
-        "--save_steps", type=int, default=500, help="model saving step (default: 5)"
+        "--save_steps", type=int, default=500, help="model saving step (default: 500)"
     )
 
     parser.add_argument(
@@ -366,6 +383,25 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--title", type=str, default=None, help="set folder name (default: model name)"
+    )
+
+    parser.add_argument(
+        "--set_wandb",
+        type=bool,
+        default=False,
+        help="whether to use wandb (default: False)",
+    )
+    parser.add_argument(
+        "--wandb_title",
+        type=str,
+        default=None,
+        help="set wandb project title (default: {title})",
+    )
+    parser.add_argument(
+        "--wandb_run_name",
+        type=str,
+        default=None,
+        help="set wandb run name (default: {title-Flod0})",
     )
     # parser.add_argument('--tokenizer', type=str, default='steps', help='''select tokenizer
     #                                                                      klue/roberta-base: AutoTokenizer.from_pretrained(MODEL_NAME).
