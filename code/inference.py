@@ -188,7 +188,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--model_dir", type=str, default="./best_model", help="defualt : ./best_model"
     )
-    parser.add_argument("--model", type=str, default="klue/roberta-base")
+    parser.add_argument("--model", type=str, default="klue/roberta-small")
     parser.add_argument("--ensemble", type=bool, default=False)
     parser.add_argument(
         "--ensemble_option",
