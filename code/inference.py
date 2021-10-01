@@ -73,7 +73,9 @@ def load_test_dataset(dataset_dir, tokenizer):
     """
     test_dataset = load_test_data(dataset_dir)
     test_label = list(map(int, test_dataset["label"].values))
-    tokenized_test = tokenized_dataset(test_dataset, tokenizer)
+
+    #### 원복해야 함
+    tokenized_test, tokenizer = tokenized_dataset(test_dataset, tokenizer)
     return test_dataset["id"], tokenized_test, test_label
 
 
@@ -84,7 +86,10 @@ def custom_load_test_dataset(dataset_dir, tokenizer):
     """
     test_dataset = load_test_data(dataset_dir)
     test_label = list(map(int, label_to_num(test_dataset["label"].values)))
-    tokenized_test = tokenized_dataset(test_dataset, tokenizer)
+
+
+    #### 원복해야 함
+    tokenized_test, tokenizer = tokenized_dataset(test_dataset, tokenizer)
     return test_dataset["id"], tokenized_test, test_label
 
 
@@ -100,9 +105,12 @@ def main(args):
 
     # load my model
     MODEL_NAME = args.model_dir  # model dir.
+
+    ############# keep 임시
+    args.model_dir = './best_model/2021-09-30 14:46:57/klue-roberta-small-Fold0'
     model = AutoModelForSequenceClassification.from_pretrained(args.model_dir)
-    model.parameters
     model.to(device)
+    print(model.parameters)
 
     # load test datset
     test_dataset_dir = "/opt/ml/dataset/test/test_data.csv"
@@ -121,11 +129,22 @@ def main(args):
         output_probs = []
         custom_output_probs = []
         ensemble_dir = "./ensemble"
-        for folder in os.listdir(ensemble_dir):
+
+        ensemble_dir_list = [
+            './best_model/klue-roberta-large-Fold0',
+            './best_model/klue-roberta-large-Fold1',
+            './best_model/klue-roberta-large-Fold2',
+            './best_model/klue-roberta-large-Fold3'
+        ]
+
+
+        # for folder in os.listdir(ensemble_dir):
+        for folder in ensemble_dir_list:
             model = AutoModelForSequenceClassification.from_pretrained(
-                os.path.join(ensemble_dir, folder)
+                # os.path.join(ensemble_dir, folder)
+                folder
             )
-            model.parameters
+            print(model.parameters)
             model.to(device)
             # predict answer
             pred_answer, output_prob = inference(
@@ -178,6 +197,11 @@ def main(args):
 
 
 if __name__ == "__main__":
+    # disable warning log
+    import os
+
+    os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
     parser = argparse.ArgumentParser()
 
     # model dir

@@ -12,8 +12,8 @@ inference 시 train dataset에서 stratify 하게 가져와 제출 전 training 
 TRAIN_FILE_PATH = "/opt/ml/dataset/train/train.csv"
 TRAIN_FOLDER_PATH = "/opt/ml/dataset/train"
 FOLD_NUM = 10
-# ROLLBACK = True
-ROLLBACK = False
+ROLLBACK = True
+# ROLLBACK = False
 SEED = 42
 
 raw_train_df = pd.read_csv(TRAIN_FILE_PATH)

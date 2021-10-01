@@ -8,6 +8,8 @@ import numpy as np
 import random
 import argparse
 
+from torchsummary import summary
+
 
 from sklearn.metrics import (
     accuracy_score,
@@ -159,7 +161,7 @@ def train(args):
     # tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
     # tokenizer = XLMRobertaTokenizer.from_pretrained(MODEL_NAME)
     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
-
+    
     # load dataset
     # train_dataset, dev_dataset = load_data("../dataset/train/train.csv")
     # dev_dataset = load_data("../dataset/train/dev.csv") # validation용 데이터는 따로 만드셔야 합니다.
@@ -182,8 +184,8 @@ def train(args):
         dev_label = label_to_num(dev_dataset["label"].values)
 
         # tokenizing dataset
-        tokenized_train = tokenized_dataset(train_dataset, tokenizer)
-        tokenized_dev = tokenized_dataset(dev_dataset, tokenizer)
+        tokenized_train, new_tokenizer = tokenized_dataset(train_dataset, tokenizer)
+        tokenized_dev, new_tokenizer = tokenized_dataset(dev_dataset, tokenizer)
 
         # make dataset for pytorch
         RE_train_dataset = RE_Dataset(tokenized_train, train_label)
@@ -204,9 +206,13 @@ def train(args):
         # model = RobertaForSequenceClassification.from_pretrained(MODEL_NAME, config=model_config)
         print(model.config)
 
-        # exit()
+        # [ENT], [/ENT] 스페셜 토큰 추가하면서 vocab size + 2
+        model.resize_token_embeddings(len(new_tokenizer))
 
-        print(model.parameters)
+        # freezing test => classifier 만 True 로 설정
+        # for param in model.roberta.parameters():
+        #     param.requires_grad = False
+
         model.to(device)
 
         # 사용한 option 외에도 다양한 option들이 있습니다.
@@ -244,7 +250,7 @@ def train(args):
 
         # train model
         trainer.train()
-        model.save_pretrained(args.save_name + "/" + TITLE + "-Fold" + str(fold))
+        model.save_pretrained(args.save_name + "/" + TIME + "/" + TITLE + "-Fold" + str(fold))
 
         del model, trainer, training_args
         torch.cuda.empty_cache()
@@ -252,6 +258,7 @@ def train(args):
 
 def main(args):
     seed_everything(args.seed)
+    mkdir_model(TIME)
     train(args)
 
 

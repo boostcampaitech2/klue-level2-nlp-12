@@ -4,12 +4,13 @@ import pandas as pd
 import torch
 
 from sklearn.model_selection import train_test_split
-from transformers import AutoTokenizer, BertTokenizer, RobertaTokenizer, Trainer
+from transformers import AutoTokenizer, BertTokenizer, RobertaTokenizer, BertTokenizerFast, Trainer
 
 from pandas import DataFrame
 from sklearn.model_selection import StratifiedKFold
 import numpy as np
 from torch.utils.data import DataLoader
+from utils import *
 
 
 class RE_Dataset(torch.utils.data.Dataset):
@@ -127,10 +128,23 @@ def tokenized_dataset(dataset, tokenizer):
     concat_entity = []
     for e01, e02 in zip(dataset["subject_entity"], dataset["object_entity"]):
         temp = ""
-        temp = e01 + "[SEP]" + e02
+        temp = "[ENT]" + e01 + "[/ENT]" + "[SEP]" + "[ENT]" + e02 + "[/ENT]"
 
         # 주어 + 목적어 pair
         concat_entity.append(temp)
+    # tokenizer => 위키피디아 한글 데이터로 만든 워드피스 토크나이저 활용
+    # tokenizer = BertTokenizer(
+    #     vocab_file='my_tokenizer-vocab.txt',
+    #     max_len=128,
+    #     do_lower_case=False,
+    # )
+
+    # 엔티티 구분용인 [SEP] 토큰까지 wordpiece 되는 현상 방지
+    tokenizer.add_special_tokens({'sep_token': '[SEP]'})
+
+    # 엔티티 강조
+    tokenizer.add_special_tokens({'additional_special_tokens': ['[ENT]', '[/ENT]']})
+
     tokenized_sentences = tokenizer(
         concat_entity,
         list(dataset["sentence"]),
@@ -142,9 +156,42 @@ def tokenized_dataset(dataset, tokenizer):
         return_token_type_ids=False,
     )
 
+    # keep entity oen hot 확인
+    entity_ids = get_entity_token_ids(tokenized_sentences["input_ids"])
+
+    # 0 or 1
+    embedding = torch.nn.Embedding(num_embeddings=2, embedding_dim=768)
+    embedded_entity = embedding(entity_ids)
+    print('--- Embedded Entity Ids ---')
+    print(embedded_entity)
+    print(embedded_entity.shape)
+
+    embedding1 = torch.nn.Embedding(num_embeddings=32002, embedding_dim=768)
+    embedded_input = embedding1(tokenized_sentences["input_ids"])
+    print('--- Embedded Input Ids ---')
+    print(embedded_input)
+    print(embedded_input.shape)
+
+    # broadcasting summation
+    inputs_embeds = embedded_input + embedded_entity
+    print(inputs_embeds)
+    print(inputs_embeds.shape)
+
+    tokenized_sentences['inputs_embeds'] = inputs_embeds
+    del tokenized_sentences['input_ids']
+
+    # tokenized_sentences['position_ids'] = entity_ids
+    print("--- Print Tokenized Sentences ---")
+    print(tokenized_sentences)
+
+    print("--- Encode Tokenized Sentences ---")
+    # print(tokenizer.convert_ids_to_tokens(tokenized_sentences["input_ids"][0]))
+
     print("--- Decode Tokenized Sentences ---")
-    print(tokenizer.decode(tokenized_sentences["input_ids"][0]))
-    return tokenized_sentences
+    # print(tokenizer.decode(tokenized_sentences["input_ids"][0]))
+
+    ################# 원복해야 함
+    return tokenized_sentences, tokenizer
 
 
 def make_stratifiedkfold(
