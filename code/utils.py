@@ -2,6 +2,7 @@ import os
 import numpy as np
 import pytz
 import torch
+import torch.nn as nn
 
 from tqdm import tqdm
 from datetime import datetime
@@ -98,3 +99,28 @@ def switch_sub_obj():
     data = data.replace({'label':config['opposite_label_list']})
 
     return data
+
+##########
+# make new embedding module
+##########
+class RobertaEmbeddings(nn.Module):
+    """
+    Same as BertEmbeddings with a tiny tweak for positional embeddings indexing.
+    """
+    def __init__(self, model):
+        super(RobertaEmbeddings, self).__init__()
+        self.tok_embed = model.embeddings.word_embeddings
+        self.pos_embed = model.embeddings.position_embeddings
+        self.ent_embed = nn.Embedding(2, 768)
+        self.norm = model.embeddings.LayerNorm
+        self.dropout = model.embeddings.dropout
+        self.padding_idx = 1
+
+    def forward(self, input_ids, token_type_ids=None, position_ids=None, inputs_embeds=None, past_key_values_length=None):
+        seq_length = input_ids.size(1)
+        if position_ids is None:
+            position_ids = torch.arange(self.padding_idx+1, seq_length+self.padding_idx+1, dtype=torch.long, device=input_ids.device)
+            position_ids = position_ids.unsqueeze(0).expand_as(input_ids)
+        embedding = self.tok_embed(input_ids) + self.pos_embed(position_ids) + self.ent_embed(token_type_ids)
+        norm = self.norm(embedding)
+        return self.dropout(norm)

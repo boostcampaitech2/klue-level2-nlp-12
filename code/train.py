@@ -198,15 +198,34 @@ def train(args):
         # model_config = XLMRobertaConfig.from_pretrained(MODEL_NAME)
         model_config.num_labels = 30
 
+        # todo
+        model_config1 = AutoConfig.from_pretrained(MODEL_NAME)
+        # model_config = XLMRobertaConfig.from_pretrained(MODEL_NAME)
+        model_config1.num_labels = 30
+
         # model = XLMRobertaForSequenceClassification.from_pretrained(MODEL_NAME, config=model_config)
-        model = AutoModelForSequenceClassification.from_pretrained(
-            MODEL_NAME, config=model_config
-        )
+        # model = AutoModelForSequenceClassification.from_pretrained(
+        #     MODEL_NAME, config=model_config
+        # )
         # model = RobertaForSequenceClassification.from_pretrained(MODEL_NAME, config=model_config)
-        print(model.config)
+        # print(model.config)
 
         # [ENT], [/ENT] 스페셜 토큰 추가하면서 vocab size + 2
-        model.resize_token_embeddings(len(new_tokenizer))
+        # model.resize_token_embeddings(len(new_tokenizer))
+
+        model1 = AutoModelForSequenceClassification.from_pretrained(
+            'klue/roberta-base', config=model_config
+        )
+        model1.resize_token_embeddings(len(new_tokenizer))
+
+        model = AutoModelForSequenceClassification.from_pretrained(
+            'klue/roberta-base', config=model_config1
+        )
+
+        new_embedding = RobertaEmbeddings(model1.roberta)
+        model.roberta.embeddings = new_embedding
+        print('--- New Model ---')
+        print(model.roberta.parameters)
 
         # freezing test => classifier 만 True 로 설정
         # for param in model.roberta.parameters():
@@ -279,6 +298,9 @@ def main(args):
 
 
 if __name__ == "__main__":
+
+    print('local to ssh')
+
     # disable warning log
     import os
 
