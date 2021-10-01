@@ -119,8 +119,8 @@ def load_data(dataset_dir: str):
     :return:
     """
     pd_dataset = pd.read_csv(dataset_dir)
-    train_set, val_set = preprocessing_dataset(pd_dataset)
-    return train_set, val_set
+    prepocessed_dataset = preprocessing_dataset(pd_dataset)
+    return prepocessed_dataset
 
 
 def tokenized_dataset(dataset, tokenizer):
