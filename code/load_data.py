@@ -12,6 +12,11 @@ import numpy as np
 from torch.utils.data import DataLoader
 from utils import *
 
+# soynlp
+import urllib.request
+from soynlp import DoublespaceLineCorpus
+from soynlp.word import WordExtractor
+
 
 class RE_Dataset(torch.utils.data.Dataset):
     """Dataset 구성을 위한 class."""
@@ -139,8 +144,19 @@ def tokenized_dataset(dataset, tokenizer):
     #     do_lower_case=False,
     # )
 
-    # 엔티티 구분용인 [SEP] 토큰까지 wordpiece 되는 현상 방지
-    tokenizer.add_special_tokens({'sep_token': '[SEP]'})
+    # vocab 추가
+    urllib.request.urlretrieve("https://raw.githubusercontent.com/lovit/soynlp/master/tutorials/2016-10-20.txt",
+                               filename="2016-10-20.txt")
+
+    corpus = DoublespaceLineCorpus("2016-10-20.txt")
+    word_extractor = WordExtractor()
+    word_extractor.train(corpus)
+    word_score_table = word_extractor.extract()
+
+    token_list = list(word_score_table.keys())
+    tokenizer.add_tokens(token_list[:len(token_list) // 9])
+    print('--- Vocab Added Tokenizer Length ---')
+    print(len(tokenizer.get_vocab()))
 
     # 엔티티 강조
     tokenizer.add_special_tokens({'additional_special_tokens': ['[ENT]', '[/ENT]']})
@@ -156,41 +172,15 @@ def tokenized_dataset(dataset, tokenizer):
         return_token_type_ids=False,
     )
 
-    # keep entity oen hot 확인
-    entity_ids = get_entity_token_ids(tokenized_sentences["input_ids"])
-
-    # 0 or 1
-    embedding = torch.nn.Embedding(num_embeddings=2, embedding_dim=768)
-    embedded_entity = embedding(entity_ids)
-    print('--- Embedded Entity Ids ---')
-    print(embedded_entity)
-    print(embedded_entity.shape)
-
-    embedding1 = torch.nn.Embedding(num_embeddings=32002, embedding_dim=768)
-    embedded_input = embedding1(tokenized_sentences["input_ids"])
-    print('--- Embedded Input Ids ---')
-    print(embedded_input)
-    print(embedded_input.shape)
-
-    # broadcasting summation
-    inputs_embeds = embedded_input + embedded_entity
-    print(inputs_embeds)
-    print(inputs_embeds.shape)
-
-    tokenized_sentences['inputs_embeds'] = inputs_embeds
-    del tokenized_sentences['input_ids']
-
-    # tokenized_sentences['position_ids'] = entity_ids
     print("--- Print Tokenized Sentences ---")
     print(tokenized_sentences)
 
     print("--- Encode Tokenized Sentences ---")
-    # print(tokenizer.convert_ids_to_tokens(tokenized_sentences["input_ids"][0]))
+    print(tokenizer.convert_ids_to_tokens(tokenized_sentences["input_ids"][0]))
 
     print("--- Decode Tokenized Sentences ---")
-    # print(tokenizer.decode(tokenized_sentences["input_ids"][0]))
+    print(tokenizer.decode(tokenized_sentences["input_ids"][0]))
 
-    ################# 원복해야 함
     return tokenized_sentences, tokenizer
 
 
