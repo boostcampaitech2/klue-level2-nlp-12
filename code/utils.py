@@ -3,11 +3,13 @@ import numpy as np
 import pytz
 import torch
 
+from transformers import AutoModelForSequenceClassification
 from tqdm import tqdm
 from datetime import datetime
 from konlpy.tag import Mecab
 from sklearn.utils.validation import column_or_1d
 from load_data import *
+from ray import tune
 
 TRAIN_DATA_PATH = '/opt/ml/dataset/train/train.csv'
 
@@ -98,3 +100,30 @@ def switch_sub_obj():
     data = data.replace({'label':config['opposite_label_list']})
 
     return data
+
+def ray_hp_space(trial):
+    '''
+    A function for searching best hyperparameters by ray tune
+
+    :param:
+    :return:
+    '''
+    return {
+        "learning_rate": tune.loguniform(5e-4, 5e-6),
+        "num_train_epochs": tune.choice(range(1, 6)),
+        "per_device_train_batch_size": tune.choice([64, 128, 256]),
+        "seed": tune.choice(range(1, 42)),
+    }
+
+def optuna_hp_space(trial):
+    '''
+    A function for searching best hyperparameters by optuna
+
+    :param:
+    :return:
+    '''
+    return {
+        "learning_rate": trial.suggest_float("learning_rate", 5e-6, 5e-4, log=True),
+        "num_train_epochs": trial.suggest_int("num_train_epochs", 1, 6),
+        "seed": trial.suggest_int("seed", 1, 42),
+    }

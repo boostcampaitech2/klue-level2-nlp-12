@@ -10,6 +10,7 @@ import argparse
 from torchsummary import summary
 import wandb
 
+from ray import tune
 from sklearn.metrics import (
     accuracy_score,
     recall_score,
@@ -139,6 +140,15 @@ def label_to_num(label):
         num_label.append(dict_label_to_num[v])
     return num_label
 
+def model_init():
+    '''
+    A function for calling pretrained model when searching best hyperparameters
+    '''
+    model_config = AutoConfig.from_pretrained('klue/roberta-base')
+    model_config.num_labels = 30
+    model = AutoModelForSequenceClassification.from_pretrained('klue/roberta-base', config=model_config)
+    model.resize_token_embeddings(32002)
+    return model
 
 def train(args):
     # load model and tokenizer
@@ -202,17 +212,18 @@ def train(args):
         model = AutoModelForSequenceClassification.from_pretrained(
             MODEL_NAME, config=model_config
         )
+
         # model = RobertaForSequenceClassification.from_pretrained(MODEL_NAME, config=model_config)
         print(model.config)
 
         # [ENT], [/ENT] 스페셜 토큰 추가하면서 vocab size + 2
-        model.resize_token_embeddings(len(new_tokenizer))
+        # model.resize_token_embeddings(len(new_tokenizer))
 
         # freezing test => classifier 만 True 로 설정
         # for param in model.roberta.parameters():
         #     param.requires_grad = False
 
-        model.to(device)
+        # model.to(device)
         # wandb 사용 여부
         if args.set_wandb:
             reported_to = "wandb"
@@ -230,18 +241,18 @@ def train(args):
         # https://huggingface.co/transformers/main_classes/trainer.html#trainingarguments 참고해주세요.
 
         training_args = TrainingArguments(
-            output_dir=args.output_dir + "/" + TITLE,  # output directory
-            save_total_limit=args.save_total_limit,  # number of total save model.
-            save_steps=args.save_steps,  # model saving step.
-            num_train_epochs=args.epochs,  # total number of training epochs
-            learning_rate=args.lr,  # learning_rate
+            output_dir=args.output_dir + "/" + TITLE,           # output directory
+            save_total_limit=args.save_total_limit,             # number of total save model.
+            save_steps=args.save_steps,                         # model saving step.
+            num_train_epochs=args.epochs,                       # total number of training epochs
+            learning_rate=args.lr,                              # learning_rate
             per_device_train_batch_size=args.train_batch_size,  # batch size per device during training
-            per_device_eval_batch_size=args.eval_batch_size,  # batch size for evaluation
-            warmup_steps=args.warmup_steps,  # number of warmup steps for learning rate scheduler
-            weight_decay=args.weight_decay,  # strength of weight decay
-            logging_dir=args.logging_dir + "/" + TITLE,  # directory for storing logs
-            logging_steps=args.logging_steps,  # log saving step.
-            evaluation_strategy=args.evaluation_strategy,  # evaluation strategy to adopt during training
+            per_device_eval_batch_size=args.eval_batch_size,    # batch size for evaluation
+            warmup_steps=args.warmup_steps,                     # number of warmup steps for learning rate scheduler
+            weight_decay=args.weight_decay,                     # strength of weight decay
+            logging_dir=args.logging_dir + "/" + TITLE,         # directory for storing logs
+            logging_steps=args.logging_steps,                   # log saving step.
+            evaluation_strategy=args.evaluation_strategy,       # evaluation strategy to adopt during training
             # `no`: No evaluation during training.
             # `steps`: Evaluate every `eval_steps`.
             # `epoch`: Evaluate every end of epoch.
@@ -253,7 +264,8 @@ def train(args):
         )
         trainer = Trainer(
             # the instantiated 🤗 Transformers model to be trained
-            model=model,
+            # model=model,
+            model_init=model_init,
             args=training_args,  # training arguments, defined above
             train_dataset=RE_train_dataset,  # training dataset
             eval_dataset=RE_dev_dataset,  # evaluation dataset
@@ -262,21 +274,26 @@ def train(args):
         )
 
         # train model
-        trainer.train()
-        model.save_pretrained(args.save_name + "/" + TIME + "/" + TITLE + "-Fold" + str(fold))
-
+        # trainer.train()
+        trainer.hyperparameter_search(
+            direction='minimize',
+            hp_space=ray_hp_space,
+            # hp_space=optuna_hp_space,
+            backend='ray'
+            # backend='optuna'
+        )
+        # model.save_pretrained(args.save_name + "/" + TIME + "/" + TITLE + "-Fold" + str(fold))
+        #
         if args.set_wandb:
             wandb.finish()
-        del model, trainer, training_args
-        torch.cuda.empty_cache()
+        # del model, trainer, training_args
+        # torch.cuda.empty_cache()
 
 
 def main(args):
-
     seed_everything(args.seed)
     mkdir_model(TIME)
     train(args)
-
 
 if __name__ == "__main__":
     # disable warning log
