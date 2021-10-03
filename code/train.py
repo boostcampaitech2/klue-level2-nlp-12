@@ -165,6 +165,8 @@ def train(args):
     # train_dataset, dev_dataset = load_data("../dataset/train/train.csv")
     # dev_dataset = load_data("../dataset/train/dev.csv") # validation용 데이터는 따로 만드셔야 합니다.
     # raw_df = pd.read_csv("/opt/ml/dataset/train/train.csv")
+    
+    # hanspell 패키지로 기본 전처리 진행한 문장으로 교체된 데이터셋
     raw_df = pd.read_csv("/opt/ml/dataset/train/corrected_train.csv")
 
     # set StratifiedKFold
