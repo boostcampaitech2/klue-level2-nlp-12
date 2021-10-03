@@ -31,6 +31,10 @@ from transformers import (
     RobertaForSequenceClassification,
     BertTokenizer,
     EarlyStoppingCallback,
+    LukeTokenizer,
+    LukeForEntityPairClassification,
+    LukeForEntityClassification,
+    LukeConfig
 )
 
 from load_data import *
@@ -159,7 +163,8 @@ def train(args):
     # tokenizer = RobertaTokenizer.from_pretrained(MODEL_NAME)
     # tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
     # tokenizer = XLMRobertaTokenizer.from_pretrained(MODEL_NAME)
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+    tokenizer = LukeTokenizer.from_pretrained("studio-ousia/luke-base", task="entity_pair_classification")
+    # tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
     
     # load dataset
     # train_dataset, dev_dataset = load_data("../dataset/train/train.csv")
@@ -194,19 +199,19 @@ def train(args):
         print(device)
 
         # setting model hyperparameter
-        model_config = AutoConfig.from_pretrained(MODEL_NAME)
-        # model_config = XLMRobertaConfig.from_pretrained(MODEL_NAME)
-        model_config.num_labels = 30
+        # model_config = AutoConfig.from_pretrained(MODEL_NAME)
+        # model_config = LukeConfig.from_pretrained(MODEL_NAME)
+        # model_config.num_labels = 30
 
         # model = XLMRobertaForSequenceClassification.from_pretrained(MODEL_NAME, config=model_config)
-        model = AutoModelForSequenceClassification.from_pretrained(
-            MODEL_NAME, config=model_config
-        )
-        # model = RobertaForSequenceClassification.from_pretrained(MODEL_NAME, config=model_config)
+        # model = AutoModelForSequenceClassification.from_pretrained(
+        #     MODEL_NAME, config=model_config
+        # )
+        model = LukeForEntityPairClassification.from_pretrained("studio-ousia/luke-base", num_labels=30)
         print(model.config)
 
         # [ENT], [/ENT] 스페셜 토큰 추가하면서 vocab size + 2
-        model.resize_token_embeddings(len(new_tokenizer))
+        # model.resize_token_embeddings(len(new_tokenizer))
 
         # freezing test => classifier 만 True 로 설정
         # for param in model.roberta.parameters():

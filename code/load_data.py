@@ -70,12 +70,18 @@ def preprocessing_dataset(dataset: pd.DataFrame):
     """
     subject_entity = []
     object_entity = []
+    sub_idx = []
+    obj_idx = []
     for i, j in zip(dataset["subject_entity"], dataset["object_entity"]):
-        i = eval(i)["word"]  # 비틀즈
-        j = eval(j)["word"]  # 조지 해리슨
+        s = eval(i)["word"]  # 비틀즈
+        o = eval(j)["word"]  # 조지 해리슨
+        s_idx = (eval(i)["start_idx"], eval(i)["end_idx"]) # sub ent 시작, 종료
+        o_idx = (eval(j)["start_idx"], eval(j)["end_idx"]) # obj ent 시작, 종료
 
-        subject_entity.append(i)
-        object_entity.append(j)
+        subject_entity.append(s)
+        object_entity.append(o)
+        sub_idx.append(s_idx)
+        obj_idx.append(o_idx)
     out_dataset = pd.DataFrame(
         {
             "id": dataset["id"],
@@ -83,6 +89,8 @@ def preprocessing_dataset(dataset: pd.DataFrame):
             "subject_entity": subject_entity,
             "object_entity": object_entity,
             "label": dataset["label"],
+            "sub_idx": sub_idx,
+            "obj_idx": obj_idx,
         }
     )
 
@@ -132,65 +140,38 @@ def tokenized_dataset(dataset, tokenizer):
 
         # 주어 + 목적어 pair
         concat_entity.append(temp)
-    # tokenizer => 위키피디아 한글 데이터로 만든 워드피스 토크나이저 활용
-    # tokenizer = BertTokenizer(
-    #     vocab_file='my_tokenizer-vocab.txt',
-    #     max_len=128,
-    #     do_lower_case=False,
-    # )
 
-    # 엔티티 구분용인 [SEP] 토큰까지 wordpiece 되는 현상 방지
-    tokenizer.add_special_tokens({'sep_token': '[SEP]'})
+    entity_idx_list = []
+    for i in range(len(dataset)):
+        entity_idx_list.append([dataset['sub_idx'][i], dataset['obj_idx'][i]])
+
+    print('--- Entity Idx List ---')
+    print(entity_idx_list)
 
     # 엔티티 강조
-    tokenizer.add_special_tokens({'additional_special_tokens': ['[ENT]', '[/ENT]']})
+    # tokenizer.add_special_tokens({'additional_special_tokens': ['[ENT]', '[/ENT]']})
 
     tokenized_sentences = tokenizer(
-        concat_entity,
         list(dataset["sentence"]),
         return_tensors="pt",
         padding=True,
         truncation=True,
-        max_length=128,
+        # max_length=128,
         add_special_tokens=True,
-        return_token_type_ids=False,
+        # return_token_type_ids=False,
+        entity_spans=entity_idx_list
     )
-
-    # keep entity oen hot 확인
-    entity_ids = get_entity_token_ids(tokenized_sentences["input_ids"])
-
-    # 0 or 1
-    embedding = torch.nn.Embedding(num_embeddings=2, embedding_dim=768)
-    embedded_entity = embedding(entity_ids)
-    print('--- Embedded Entity Ids ---')
-    print(embedded_entity)
-    print(embedded_entity.shape)
-
-    embedding1 = torch.nn.Embedding(num_embeddings=32002, embedding_dim=768)
-    embedded_input = embedding1(tokenized_sentences["input_ids"])
-    print('--- Embedded Input Ids ---')
-    print(embedded_input)
-    print(embedded_input.shape)
-
-    # broadcasting summation
-    inputs_embeds = embedded_input + embedded_entity
-    print(inputs_embeds)
-    print(inputs_embeds.shape)
-
-    tokenized_sentences['inputs_embeds'] = inputs_embeds
-    del tokenized_sentences['input_ids']
 
     # tokenized_sentences['position_ids'] = entity_ids
     print("--- Print Tokenized Sentences ---")
     print(tokenized_sentences)
 
     print("--- Encode Tokenized Sentences ---")
-    # print(tokenizer.convert_ids_to_tokens(tokenized_sentences["input_ids"][0]))
+    print(tokenizer.convert_ids_to_tokens(tokenized_sentences["input_ids"][0]))
 
     print("--- Decode Tokenized Sentences ---")
-    # print(tokenizer.decode(tokenized_sentences["input_ids"][0]))
+    print(tokenizer.decode(tokenized_sentences["input_ids"][0]))
 
-    ################# 원복해야 함
     return tokenized_sentences, tokenizer
 
 
@@ -210,7 +191,6 @@ def make_stratifiedkfold(
         >>> for fold, (trn_idx, val_idx) in enumerate(folds):
         >>>     train_df = raw_train.loc[trn_idx, :].reset_index(drop=True)
         >>>     valid_df = raw_train.loc[val_idx, :].reset_index(drop=True)
-
         >>>     train_dataset = DataSet(train_df)
         >>>     valid_dataset = DataSet(valid_df)
     Args:
