@@ -5,7 +5,7 @@ import torch
 
 from tqdm import tqdm
 from datetime import datetime
-from konlpy.tag import Mecab
+# from konlpy.tag import Mecab
 from sklearn.utils.validation import column_or_1d
 from load_data import *
 
