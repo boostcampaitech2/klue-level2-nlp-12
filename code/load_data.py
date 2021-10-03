@@ -145,8 +145,8 @@ def tokenized_dataset(dataset, tokenizer):
     for i in range(len(dataset)):
         entity_idx_list.append([dataset['sub_idx'][i], dataset['obj_idx'][i]])
 
-    print('--- Entity Idx List ---')
-    print(entity_idx_list)
+    print('--- Entity Idx List Ex ---')
+    print(entity_idx_list[:10])
 
     # 엔티티 강조
     # tokenizer.add_special_tokens({'additional_special_tokens': ['[ENT]', '[/ENT]']})
