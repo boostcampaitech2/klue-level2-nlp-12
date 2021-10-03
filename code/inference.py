@@ -106,14 +106,13 @@ def main(args):
     # load my model
     MODEL_NAME = args.model_dir  # model dir.
 
-    ############# keep 임시
-    args.model_dir = './best_model/2021-09-30 14:46:57/klue-roberta-small-Fold0'
+    args.model_dir = './best_model/2021-10-03-21:38:35/klue-roberta-base-Fold0'
     model = AutoModelForSequenceClassification.from_pretrained(args.model_dir)
     model.to(device)
     print(model.parameters)
 
     # load test datset
-    test_dataset_dir = "/opt/ml/dataset/test/test_data.csv"
+    test_dataset_dir = "/opt/ml/dataset/test/typed_test_data.csv"
     test_id, test_dataset, test_label = load_test_dataset(test_dataset_dir, tokenizer)
     Re_test_dataset = RE_Dataset(test_dataset, test_label)
 
