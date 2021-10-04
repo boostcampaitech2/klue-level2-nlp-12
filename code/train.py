@@ -364,7 +364,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--save_name",
         type=str,
-        default="./best_model",
+        default="./ensemble",
         help="model save at {save_name}",
     )
     parser.add_argument(
@@ -384,7 +384,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--fold_num",
         type=int,
-        default=5,
+        default=1,
         help="k in the k-fold cross validation (default: 5)",
     )
     parser.add_argument(
