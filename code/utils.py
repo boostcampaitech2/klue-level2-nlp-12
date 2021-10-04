@@ -6,7 +6,7 @@ import torch
 from transformers import AutoModelForSequenceClassification
 from tqdm import tqdm
 from datetime import datetime
-from konlpy.tag import Mecab
+# from konlpy.tag import Mecab
 from sklearn.utils.validation import column_or_1d
 from load_data import *
 from ray import tune
@@ -109,10 +109,10 @@ def ray_hp_space(trial):
     :return:
     '''
     return {
-        "learning_rate": tune.loguniform(5e-4, 5e-6),
+        "learning_rate": tune.loguniform(5e-6, 5e-4),
         "num_train_epochs": tune.choice(range(1, 6)),
-        "per_device_train_batch_size": tune.choice([64, 128, 256]),
-        "seed": tune.choice(range(1, 42)),
+        "per_device_train_batch_size": tune.choice([32, 64, 128]),
+        "seed": tune.choice(range(1, 43)),
     }
 
 def optuna_hp_space(trial):

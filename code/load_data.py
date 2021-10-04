@@ -130,22 +130,10 @@ def tokenized_dataset(dataset, tokenizer):
         temp = ""
         temp = "[ENT]" + e01 + "[/ENT]" + "[SEP]" + "[ENT]" + e02 + "[/ENT]"
 
-        # todo 기호로 엔티티 구분
-        # temp = "[ENT]" + e01 + "[/ENT]" + "[SEP]" + "[ENT]" + e02 + "[/ENT]"
-
         # 주어 + 목적어 pair
         concat_entity.append(temp)
-    # tokenizer => 위키피디아 한글 데이터로 만든 워드피스 토크나이저 활용
-    # tokenizer = BertTokenizer(
-    #     vocab_file='my_tokenizer-vocab.txt',
-    #     max_len=128,
-    #     do_lower_case=False,
-    # )
 
-    # 엔티티 구분용인 [SEP] 토큰까지 wordpiece 되는 현상 방지
-    tokenizer.add_special_tokens({'sep_token': '[SEP]'})
-
-    # 엔티티 강조
+    # 엔티티 스페셜 토큰
     tokenizer.add_special_tokens({'additional_special_tokens': ['[ENT]', '[/ENT]']})
 
     tokenized_sentences = tokenizer(
