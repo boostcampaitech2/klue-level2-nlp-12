@@ -5,6 +5,9 @@ from transformers import (
     AutoModelForSequenceClassification,
     Trainer,
     TrainingArguments,
+    XLMRobertaTokenizer,
+    XLMRobertaConfig,
+    XLMRobertaForSequenceClassification
 )
 from torch.utils.data import DataLoader
 from load_data import *
@@ -101,19 +104,21 @@ def main(args):
     # load tokenizer
     # Tokenizer_NAME = "klue/bert-base"
     Tokenizer_NAME = args.model
-    tokenizer = AutoTokenizer.from_pretrained(Tokenizer_NAME)
+    # tokenizer = AutoTokenizer.from_pretrained(Tokenizer_NAME)
+    tokenizer = XLMRobertaTokenizer.from_pretrained(Tokenizer_NAME)
 
     # load my model
     MODEL_NAME = args.model_dir  # model dir.
 
     # keep 임시
-    args.model_dir = './best_model/2021-10-04-15:52:05/klue-roberta-base-Fold0'
-    model = AutoModelForSequenceClassification.from_pretrained(args.model_dir)
+    args.model_dir = './ensemble/xlm-roberta-large-typed'
+    # model = AutoModelForSequenceClassification.from_pretrained(args.model_dir)
+    model = XLMRobertaForSequenceClassification.from_pretrained(args.model_dir)
     model.to(device)
     print(model.parameters)
 
     # load test datset
-    test_dataset_dir = "/opt/ml/dataset/test/test_data.csv"
+    test_dataset_dir = "/opt/ml/dataset/test/typed_test_data.csv"
     test_id, test_dataset, test_label = load_test_dataset(test_dataset_dir, tokenizer)
     Re_test_dataset = RE_Dataset(test_dataset, test_label)
 
@@ -175,9 +180,10 @@ def main(args):
     else:
         # load my model
         MODEL_NAME = args.model_dir  # model dir.
-        model = AutoModelForSequenceClassification.from_pretrained(args.model_dir)
-        model.parameters
-        model.to(device)
+
+        # model = AutoModelForSequenceClassification.from_pretrained(args.model_dir)
+        # model.to(device)
+
         # predict answer
         pred_answer, output_prob = inference(
             model, Re_test_dataset, device
@@ -216,7 +222,7 @@ if __name__ == "__main__":
 
     # model dir
     parser.add_argument(
-        "--model_dir", type=str, default="./best_model", help="defualt : ./best_model"
+        "--model_dir", type=str, default="./ensemble", help="defualt : ./best_model"
     )
     parser.add_argument("--model", type=str, default="klue/roberta-small")
     parser.add_argument("--ensemble", type=bool, default=False)

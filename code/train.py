@@ -158,117 +158,124 @@ def train(args):
     # tokenizer = BertTokenizer.from_pretrained(MODEL_NAME)
     # tokenizer = RobertaTokenizer.from_pretrained(MODEL_NAME)
     # tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
-    # tokenizer = XLMRobertaTokenizer.from_pretrained(MODEL_NAME)
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+    tokenizer = XLMRobertaTokenizer.from_pretrained(MODEL_NAME)
+    # tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
     
     # load dataset
     # train_dataset, dev_dataset = load_data("../dataset/train/train.csv")
     # dev_dataset = load_data("../dataset/train/dev.csv") # validation용 데이터는 따로 만드셔야 합니다.
-    raw_df = pd.read_csv("/opt/ml/dataset/train/train.csv")
+    raw_df = pd.read_csv("/opt/ml/dataset/train/typed_train.csv")
 
     # set StratifiedKFold
-    folds = make_stratifiedkfold(raw_df, raw_df.label, KFLOD_NUM, True, SEED)
-    for fold, (trn_idx, dev_idx) in enumerate(folds):
-        if not args.run_kfold:
-            if fold > 0:
-                break
-        train_dataset, dev_dataset = make_train_df(raw_df, trn_idx, dev_idx)
+    # folds = make_stratifiedkfold(raw_df, raw_df.label, KFLOD_NUM, True, SEED)
 
-        # entity extraction by eval
-        train_dataset = preprocessing_dataset(train_dataset)
-        dev_dataset = preprocessing_dataset(dev_dataset)
+    # for fold, (trn_idx, dev_idx) in enumerate(folds):
+    # if not args.run_kfold:
+    #     if fold > 0:
+    #         break
+    # train_dataset, dev_dataset = make_train_df(raw_df, trn_idx, dev_idx)
 
-        # label(str) => label(int)
-        train_label = label_to_num(train_dataset["label"].values)
-        dev_label = label_to_num(dev_dataset["label"].values)
+    # entity extraction by eval
+    train_dataset = preprocessing_dataset(raw_df)
+    # dev_dataset = preprocessing_dataset(dev_dataset)
 
-        # tokenizing dataset
-        tokenized_train, new_tokenizer = tokenized_dataset(train_dataset, tokenizer)
-        tokenized_dev, new_tokenizer = tokenized_dataset(dev_dataset, tokenizer)
+    # label(str) => label(int)
+    train_label = label_to_num(train_dataset["label"].values)
+    # dev_label = label_to_num(dev_dataset["label"].values)
 
-        # make dataset for pytorch
-        RE_train_dataset = RE_Dataset(tokenized_train, train_label)
-        RE_dev_dataset = RE_Dataset(tokenized_dev, dev_label)
+    # tokenizing dataset
+    tokenized_train, new_tokenizer = tokenized_dataset(train_dataset, tokenizer)
+    # tokenized_dev, new_tokenizer = tokenized_dataset(dev_dataset, tokenizer)
 
-        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-        print(device)
+    # make dataset for pytorch
+    RE_train_dataset = RE_Dataset(tokenized_train, train_label)
+    # RE_dev_dataset = RE_Dataset(tokenized_dev, dev_label)
 
-        # setting model hyperparameter
-        model_config = AutoConfig.from_pretrained(MODEL_NAME)
-        # model_config = XLMRobertaConfig.from_pretrained(MODEL_NAME)
-        model_config.num_labels = 30
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    print(device)
 
-        # model = XLMRobertaForSequenceClassification.from_pretrained(MODEL_NAME, config=model_config)
-        model = AutoModelForSequenceClassification.from_pretrained(
-            MODEL_NAME, config=model_config
-        )
-        # model = RobertaForSequenceClassification.from_pretrained(MODEL_NAME, config=model_config)
-        print(model.config)
+    # setting model hyperparameter
+    # model_config = AutoConfig.from_pretrained(MODEL_NAME)
+    model_config = XLMRobertaConfig.from_pretrained(MODEL_NAME)
+    # model_config = RobertaConfig.from_pretrained(MODEL_NAME)
+    model_config.num_labels = 30
 
-        # [ENT], [/ENT] 스페셜 토큰 추가하면서 vocab size + 2
-        model.resize_token_embeddings(len(new_tokenizer))
+    model = XLMRobertaForSequenceClassification.from_pretrained(MODEL_NAME, config=model_config)
+    # model = RobertaForSequenceClassification.from_pretrained(MODEL_NAME, config=model_config)
+    # model = AutoModelForSequenceClassification.from_pretrained(
+    #     MODEL_NAME, config=model_config
+    # )
+    # model = RobertaForSequenceClassification.from_pretrained(MODEL_NAME, config=model_config)
+    print(model.config)
 
-        # freezing test => classifier 만 True 로 설정
-        # for param in model.roberta.parameters():
-        #     param.requires_grad = False
+    # [ENT], [/ENT] 스페셜 토큰 추가하면서 vocab size + 2
+    model.resize_token_embeddings(len(new_tokenizer))
 
-        model.to(device)
-        # wandb 사용 여부
-        if args.set_wandb:
-            reported_to = "wandb"
-            if args.wandb_title == None:
-                WANDB_PROJECT_NAME = args.title
-            else:
-                WANDB_PROJECT_NAME = args.wandb_title
-            if args.wandb_run_name == None:
-                RAN_NAME = TITLE + "-Fold" + str(fold)
-            wandb.init(project=WANDB_PROJECT_NAME, name=RAN_NAME)
+    # freezing test => classifier 만 True 로 설정
+    # for param in model.roberta.parameters():
+    #     param.requires_grad = False
+
+    model.to(device)
+
+    if args.set_wandb:
+        reported_to = "wandb"
+        if args.wandb_title == None:
+            WANDB_PROJECT_NAME = args.title
         else:
-            reported_to = None
-            RAN_NAME = None
-        # 사용한 option 외에도 다양한 option들이 있습니다.
-        # https://huggingface.co/transformers/main_classes/trainer.html#trainingarguments 참고해주세요.
+            WANDB_PROJECT_NAME = args.wandb_title
+        if args.wandb_run_name == None:
+            # RAN_NAME = TITLE + "-Fold" + str(fold)
+            RAN_NAME = TITLE + "-single"
+        wandb.init(project=WANDB_PROJECT_NAME, name=RAN_NAME)
+    else:
+        reported_to = None
+        RAN_NAME = None
+    # 사용한 option 외에도 다양한 option들이 있습니다.
+    # https://huggingface.co/transformers/main_classes/trainer.html#trainingarguments 참고해주세요.
 
-        training_args = TrainingArguments(
-            output_dir=args.output_dir + "/" + TITLE,  # output directory
-            save_total_limit=args.save_total_limit,  # number of total save model.
-            save_steps=args.save_steps,  # model saving step.
-            num_train_epochs=args.epochs,  # total number of training epochs
-            learning_rate=args.lr,  # learning_rate
-            per_device_train_batch_size=args.train_batch_size,  # batch size per device during training
-            per_device_eval_batch_size=args.eval_batch_size,  # batch size for evaluation
-            warmup_steps=args.warmup_steps,  # number of warmup steps for learning rate scheduler
-            weight_decay=args.weight_decay,  # strength of weight decay
-            logging_dir=args.logging_dir + "/" + TITLE,  # directory for storing logs
-            logging_steps=args.logging_steps,  # log saving step.
-            evaluation_strategy=args.evaluation_strategy,  # evaluation strategy to adopt during training
-            # `no`: No evaluation during training.
-            # `steps`: Evaluate every `eval_steps`.
-            # `epoch`: Evaluate every end of epoch.
-            eval_steps=args.eval_steps,  # evaluation step.
-            load_best_model_at_end=True,
-            dataloader_num_workers=4,
-            report_to=reported_to,  # wandb사용
-            run_name=RAN_NAME,
-        )
-        trainer = Trainer(
-            # the instantiated 🤗 Transformers model to be trained
-            model=model,
-            args=training_args,  # training arguments, defined above
-            train_dataset=RE_train_dataset,  # training dataset
-            eval_dataset=RE_dev_dataset,  # evaluation dataset
-            compute_metrics=compute_metrics,  # define metrics function
-            callbacks=[EarlyStoppingCallback(early_stopping_patience=3)],
-        )
+    training_args = TrainingArguments(
+        output_dir=args.output_dir + "/" + TITLE,  # output directory
+        save_total_limit=args.save_total_limit,  # number of total save model.
+        save_steps=args.save_steps,  # model saving step.
+        num_train_epochs=args.epochs,  # total number of training epochs
+        learning_rate=args.lr,  # learning_rate
+        per_device_train_batch_size=args.train_batch_size,  # batch size per device during training
+        # per_device_eval_batch_size=args.eval_batch_size,  # batch size for evaluation
+        warmup_steps=args.warmup_steps,  # number of warmup steps for learning rate scheduler
+        weight_decay=args.weight_decay,  # strength of weight decay
+        logging_dir=args.logging_dir + "/" + TITLE,  # directory for storing logs
+        logging_steps=args.logging_steps,  # log saving step.
+        # evaluation_strategy=args.evaluation_strategy,  # evaluation strategy to adopt during training
+        evaluation_strategy='no',  # evaluation strategy to adopt during training
+        # `no`: No evaluation during training.
+        # `steps`: Evaluate every `eval_steps`.
+        # `epoch`: Evaluate every end of epoch.
+        # eval_steps=args.eval_steps,  # evaluation step.
+        # load_best_model_at_end=True,
+        load_best_model_at_end=False,
+        dataloader_num_workers=4,
+        report_to=reported_to,  # wandb사용
+        run_name=RAN_NAME,
+    )
+    trainer = Trainer(
+        # the instantiated 🤗 Transformers model to be trained
+        model=model,
+        args=training_args,  # training arguments, defined above
+        train_dataset=RE_train_dataset,  # training dataset
+        # eval_dataset=RE_dev_dataset,  # evaluation dataset
+        compute_metrics=compute_metrics,  # define metrics function
+        # callbacks=[EarlyStoppingCallback(early_stopping_patience=3)],
+    )
 
-        # train model
-        trainer.train()
-        model.save_pretrained(args.save_name + "/" + TIME + "/" + TITLE + "-Fold" + str(fold))
+    # train model
+    trainer.train()
+    # model.save_pretrained(args.save_name + "/" + TIME + "/" + TITLE + "-Fold" + str(fold))
+    model.save_pretrained(args.save_name + "/" + TITLE + '-typed')
 
-        if args.set_wandb:
-            wandb.finish()
-        del model, trainer, training_args
-        torch.cuda.empty_cache()
+    if args.set_wandb:
+        wandb.finish()
+    del model, trainer, training_args
+    torch.cuda.empty_cache()
 
 
 def main(args):

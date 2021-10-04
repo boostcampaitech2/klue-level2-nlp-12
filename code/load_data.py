@@ -133,7 +133,9 @@ def tokenized_dataset(dataset, tokenizer):
     concat_entity = []
     for e01, e02 in zip(dataset["subject_entity"], dataset["object_entity"]):
         temp = ""
-        temp = "[ENT]" + e01 + "[/ENT]" + "[SEP]" + "[ENT]" + e02 + "[/ENT]"
+        # temp = e01 + '[SEP]' + e02
+        temp = e01 + '</s>' + e02
+        # temp = "[ENT]" + e02 + "[/ENT]" + "[SEP]" + "[ENT]" + e01 + "[/ENT]"
 
         # 주어 + 목적어 pair
         concat_entity.append(temp)
@@ -160,7 +162,7 @@ def tokenized_dataset(dataset, tokenizer):
     # print(len(tokenizer.get_vocab()))
 
     # 엔티티 스페셜 토큰
-    tokenizer.add_special_tokens({'additional_special_tokens': ['[ENT]', '[/ENT]']})
+    # tokenizer.add_special_tokens({'additional_special_tokens': ['[ENT]', '[/ENT]']})
 
     tokenized_sentences = tokenizer(
         concat_entity,
