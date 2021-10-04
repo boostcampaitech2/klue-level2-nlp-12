@@ -164,7 +164,7 @@ def train(args):
     # load dataset
     # train_dataset, dev_dataset = load_data("../dataset/train/train.csv")
     # dev_dataset = load_data("../dataset/train/dev.csv") # validation용 데이터는 따로 만드셔야 합니다.
-    raw_df = pd.read_csv("/opt/ml/dataset/train/typed_train.csv")
+    raw_df = pd.read_csv("/opt/ml/dataset/train/train.csv")
 
     # set StratifiedKFold
     folds = make_stratifiedkfold(raw_df, raw_df.label, KFLOD_NUM, True, SEED)

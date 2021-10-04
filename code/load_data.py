@@ -136,6 +136,13 @@ def tokenized_dataset(dataset, tokenizer):
     # 엔티티 강조
     # tokenizer.add_special_tokens({'additional_special_tokens': ['[ENT]', '[/ENT]']})
 
+    # tokenizer from korquad vocab
+    # tokenizer = BertTokenizer(
+    #     vocab_file='vocab.txt',
+    #     max_len=128,
+    #     do_lower_case=False,
+    # )
+
     tokenized_sentences = tokenizer(
         concat_entity,
         list(dataset["sentence"]),
