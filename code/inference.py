@@ -106,8 +106,8 @@ def main(args):
     # load my model
     MODEL_NAME = args.model_dir  # model dir.
 
-    ############# keep 임시
-    args.model_dir = './best_model/2021-10-03-00:17:19/klue-roberta-base-Fold0'
+    # keep 임시
+    args.model_dir = './best_model/2021-10-04-15:52:05/klue-roberta-base-Fold0'
     model = AutoModelForSequenceClassification.from_pretrained(args.model_dir)
     model.to(device)
     print(model.parameters)

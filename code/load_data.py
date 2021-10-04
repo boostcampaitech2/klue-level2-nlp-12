@@ -137,28 +137,29 @@ def tokenized_dataset(dataset, tokenizer):
 
         # 주어 + 목적어 pair
         concat_entity.append(temp)
-    # tokenizer => 위키피디아 한글 데이터로 만든 워드피스 토크나이저 활용
+
+    # vocab from tokenizer + train by mecab + test by mecab
     # tokenizer = BertTokenizer(
-    #     vocab_file='my_tokenizer-vocab.txt',
+    #     vocab_file='unique_vocab.txt',
     #     max_len=128,
     #     do_lower_case=False,
     # )
 
     # vocab 추가
-    urllib.request.urlretrieve("https://raw.githubusercontent.com/lovit/soynlp/master/tutorials/2016-10-20.txt",
-                               filename="2016-10-20.txt")
+    # urllib.request.urlretrieve("https://raw.githubusercontent.com/lovit/soynlp/master/tutorials/2016-10-20.txt",
+    #                            filename="2016-10-20.txt")
+    #
+    # corpus = DoublespaceLineCorpus("2016-10-20.txt")
+    # word_extractor = WordExtractor()
+    # word_extractor.train(corpus)
+    # word_score_table = word_extractor.extract()
+    #
+    # token_list = list(word_score_table.keys())
+    # tokenizer.add_tokens(token_list[:len(token_list) // 9])
+    # print('--- Vocab Added Tokenizer Length ---')
+    # print(len(tokenizer.get_vocab()))
 
-    corpus = DoublespaceLineCorpus("2016-10-20.txt")
-    word_extractor = WordExtractor()
-    word_extractor.train(corpus)
-    word_score_table = word_extractor.extract()
-
-    token_list = list(word_score_table.keys())
-    tokenizer.add_tokens(token_list[:len(token_list) // 9])
-    print('--- Vocab Added Tokenizer Length ---')
-    print(len(tokenizer.get_vocab()))
-
-    # 엔티티 강조
+    # 엔티티 스페셜 토큰
     tokenizer.add_special_tokens({'additional_special_tokens': ['[ENT]', '[/ENT]']})
 
     tokenized_sentences = tokenizer(
