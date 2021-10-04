@@ -8,10 +8,7 @@ from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_sc
 from transformers import AutoTokenizer, AutoConfig, AutoModelForSequenceClassification, Trainer, TrainingArguments, RobertaConfig, RobertaTokenizer, RobertaForSequenceClassification, BertTokenizer
 from load_data import *
 
-
-def klue_re_micro_f1(preds, labels):
-    """KLUE-RE micro f1 (except no_relation)"""
-    label_list = ['no_relation', 'org:top_members/employees', 'org:members',
+LABEL_LIST = ['no_relation', 'org:top_members/employees', 'org:members',
        'org:product', 'per:title', 'org:alternate_names',
        'per:employee_of', 'org:place_of_headquarters', 'per:product',
        'org:number_of_employees/members', 'per:children',
@@ -22,8 +19,11 @@ def klue_re_micro_f1(preds, labels):
        'per:schools_attended', 'per:date_of_death', 'per:date_of_birth',
        'per:place_of_birth', 'per:place_of_death', 'org:founded_by',
        'per:religion']
-    no_relation_label_idx = label_list.index("no_relation")
-    label_indices = list(range(len(label_list)))
+
+def klue_re_micro_f1(preds, labels):
+    """KLUE-RE micro f1 (except no_relation)"""
+    no_relation_label_idx = LABEL_LIST.index("no_relation")
+    label_indices = list(range(len(LABEL_LIST)))
     label_indices.remove(no_relation_label_idx)
     return sklearn.metrics.f1_score(labels, preds, average="micro", labels=label_indices) * 100.0
 
@@ -64,6 +64,42 @@ def label_to_num(label):
     num_label.append(dict_label_to_num[v])
   
   return num_label
+
+class CustomTrainer(Trainer):
+    def get_train_dataloader(self):
+        """
+        Returns the training :class:`~torch.utils.data.DataLoader`.
+
+        Will use no sampler if :obj:`self.train_dataset` does not implement :obj:`__len__`, a random sampler (adapted
+        to distributed training if necessary) otherwise.
+
+        Subclass and override this method if you want to inject some custom behavior.
+        """        
+        if self.train_dataset is None:
+            raise ValueError("Trainer: training requires a train_dataset.")
+
+        train_dataset = self.train_dataset
+        if is_datasets_available() and isinstance(train_dataset, Dataset):
+            train_dataset = self._remove_unused_columns(train_dataset, description="training")
+
+        train_label = self.train_dataset.labels
+        #print(len(train_label), [train_label.count(idx) for idx in range(len(LABEL_LIST))])
+        generator = torch.Generator()
+        generator.manual_seed(int(torch.empty((), dtype=torch.int64).random_().item()))
+        #label_weights = torch.tensor([1. - (3 * (train_label.count(idx) / len(train_label))) for idx, label in enumerate(LABEL_LIST)], dtype=torch.float)
+        label_weights = torch.tensor([1. / train_label.count(idx) for idx, label in enumerate(LABEL_LIST)], dtype=torch.float)
+        weighted_sampler = WeightedRandomSampler(weights=label_weights, num_samples=len(train_label), replacement=True, generator=generator)
+
+        return DataLoader(
+            train_dataset,
+            batch_size=self.args.train_batch_size,
+            #sampler=ImbalancedDatasetSampler(train_dataset), # https://github.com/ufoym/imbalanced-dataset-sampler
+            sampler=weighted_sampler,
+            collate_fn=self.data_collator,
+            drop_last=self.args.dataloader_drop_last,
+            num_workers=self.args.dataloader_num_workers,
+            pin_memory=self.args.dataloader_pin_memory,
+        )   
 
 def train():
   # load model and tokenizer
