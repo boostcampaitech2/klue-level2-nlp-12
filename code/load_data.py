@@ -127,6 +127,45 @@ def load_data(dataset_dir: str):
     prepocessed_dataset = preprocessing_dataset(pd_dataset)
     return prepocessed_dataset
 
+def tokenized_test_dataset(dataset, tokenizer, folder):
+    concat_entity = []
+    for e01, e02 in zip(dataset["subject_entity"], dataset["object_entity"]):
+        temp = ""
+
+        if folder == 'klue-bert-base' or 'corrected' in folder or 'aeda' in folder:
+            temp = "[ENT]" + e02 + "[/ENT]" + "[SEP]" + "[ENT]" + e01 + "[/ENT]"
+        elif 'entity-switch' in folder:
+            temp = e02 + '[SEP]' + e01
+        elif 'typed' in folder: # xlm-roberta (now)
+            temp = e01 + '</s>' + e02
+
+        # 주어 + 목적어 pair
+        concat_entity.append(temp)
+
+    # 엔티티 스페셜 토큰
+    tokenizer.add_special_tokens({'additional_special_tokens': ['[ENT]', '[/ENT]']})
+
+    tokenized_sentences = tokenizer(
+        concat_entity,
+        list(dataset["sentence"]),
+        return_tensors="pt",
+        padding=True,
+        truncation=True,
+        max_length=128,
+        add_special_tokens=True,
+        return_token_type_ids=False,
+    )
+
+    print("--- Print Tokenized Sentences ---")
+    print(tokenized_sentences)
+
+    print("--- Encode Tokenized Sentences ---")
+    print(tokenizer.convert_ids_to_tokens(tokenized_sentences["input_ids"][0]))
+
+    print("--- Decode Tokenized Sentences ---")
+    print(tokenizer.decode(tokenized_sentences["input_ids"][0]))
+
+    return tokenized_sentences, tokenizer
 
 def tokenized_dataset(dataset, tokenizer):
     """tokenizer에 따라 sentence를 tokenizing 합니다."""
@@ -134,8 +173,8 @@ def tokenized_dataset(dataset, tokenizer):
     for e01, e02 in zip(dataset["subject_entity"], dataset["object_entity"]):
         temp = ""
         # temp = e01 + '[SEP]' + e02
-        temp = e01 + '</s>' + e02
-        # temp = "[ENT]" + e02 + "[/ENT]" + "[SEP]" + "[ENT]" + e01 + "[/ENT]"
+        # temp = e01 + '</s>' + e02
+        temp = "[ENT]" + e02 + "[/ENT]" + "[SEP]" + "[ENT]" + e01 + "[/ENT]"
 
         # 주어 + 목적어 pair
         concat_entity.append(temp)
@@ -162,7 +201,7 @@ def tokenized_dataset(dataset, tokenizer):
     # print(len(tokenizer.get_vocab()))
 
     # 엔티티 스페셜 토큰
-    # tokenizer.add_special_tokens({'additional_special_tokens': ['[ENT]', '[/ENT]']})
+    tokenizer.add_special_tokens({'additional_special_tokens': ['[ENT]', '[/ENT]']})
 
     tokenized_sentences = tokenizer(
         concat_entity,

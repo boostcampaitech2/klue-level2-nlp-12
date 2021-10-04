@@ -157,14 +157,14 @@ def train(args):
 
     # tokenizer = BertTokenizer.from_pretrained(MODEL_NAME)
     # tokenizer = RobertaTokenizer.from_pretrained(MODEL_NAME)
-    # tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
-    tokenizer = XLMRobertaTokenizer.from_pretrained(MODEL_NAME)
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+    # tokenizer = XLMRobertaTokenizer.from_pretrained(MODEL_NAME)
     # tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
     
     # load dataset
     # train_dataset, dev_dataset = load_data("../dataset/train/train.csv")
     # dev_dataset = load_data("../dataset/train/dev.csv") # validation용 데이터는 따로 만드셔야 합니다.
-    raw_df = pd.read_csv("/opt/ml/dataset/train/typed_train.csv")
+    raw_df = pd.read_csv("/opt/ml/dataset/train/train_AEDA.csv")
 
     # set StratifiedKFold
     # folds = make_stratifiedkfold(raw_df, raw_df.label, KFLOD_NUM, True, SEED)
@@ -195,16 +195,16 @@ def train(args):
     print(device)
 
     # setting model hyperparameter
-    # model_config = AutoConfig.from_pretrained(MODEL_NAME)
-    model_config = XLMRobertaConfig.from_pretrained(MODEL_NAME)
+    model_config = AutoConfig.from_pretrained(MODEL_NAME)
+    # model_config = XLMRobertaConfig.from_pretrained(MODEL_NAME)
     # model_config = RobertaConfig.from_pretrained(MODEL_NAME)
     model_config.num_labels = 30
 
-    model = XLMRobertaForSequenceClassification.from_pretrained(MODEL_NAME, config=model_config)
+    # model = XLMRobertaForSequenceClassification.from_pretrained(MODEL_NAME, config=model_config)
     # model = RobertaForSequenceClassification.from_pretrained(MODEL_NAME, config=model_config)
-    # model = AutoModelForSequenceClassification.from_pretrained(
-    #     MODEL_NAME, config=model_config
-    # )
+    model = AutoModelForSequenceClassification.from_pretrained(
+        MODEL_NAME, config=model_config
+    )
     # model = RobertaForSequenceClassification.from_pretrained(MODEL_NAME, config=model_config)
     print(model.config)
 
@@ -270,7 +270,7 @@ def train(args):
     # train model
     trainer.train()
     # model.save_pretrained(args.save_name + "/" + TIME + "/" + TITLE + "-Fold" + str(fold))
-    model.save_pretrained(args.save_name + "/" + TITLE + '-typed')
+    model.save_pretrained(args.save_name + "/" + TITLE + '-aeda')
 
     if args.set_wandb:
         wandb.finish()

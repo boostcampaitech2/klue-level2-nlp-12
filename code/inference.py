@@ -69,7 +69,7 @@ def num_to_label(label):
     return origin_label
 
 
-def load_test_dataset(dataset_dir, tokenizer):
+def load_test_dataset(dataset_dir, tokenizer, folder='klue/bert-base'):
     """
     test dataset을 불러온 후,
     tokenizing 합니다.
@@ -77,8 +77,7 @@ def load_test_dataset(dataset_dir, tokenizer):
     test_dataset = load_test_data(dataset_dir)
     test_label = list(map(int, test_dataset["label"].values))
 
-    #### 원복해야 함
-    tokenized_test, tokenizer = tokenized_dataset(test_dataset, tokenizer)
+    tokenized_test, tokenizer = tokenized_test_dataset(test_dataset, tokenizer, folder)
     return test_dataset["id"], tokenized_test, test_label
 
 
@@ -104,8 +103,8 @@ def main(args):
     # load tokenizer
     # Tokenizer_NAME = "klue/bert-base"
     Tokenizer_NAME = args.model
-    # tokenizer = AutoTokenizer.from_pretrained(Tokenizer_NAME)
-    tokenizer = XLMRobertaTokenizer.from_pretrained(Tokenizer_NAME)
+    tokenizer = AutoTokenizer.from_pretrained(Tokenizer_NAME)
+    # tokenizer = XLMRobertaTokenizer.from_pretrained(Tokenizer_NAME)
 
     # load my model
     MODEL_NAME = args.model_dir  # model dir.
@@ -113,14 +112,14 @@ def main(args):
     # keep 임시
     args.model_dir = './ensemble/xlm-roberta-large-typed'
     # model = AutoModelForSequenceClassification.from_pretrained(args.model_dir)
-    model = XLMRobertaForSequenceClassification.from_pretrained(args.model_dir)
-    model.to(device)
-    print(model.parameters)
+    # model = XLMRobertaForSequenceClassification.from_pretrained(args.model_dir)
+    # model.to(device)
+    # print(model.parameters)
 
     # load test datset
-    test_dataset_dir = "/opt/ml/dataset/test/typed_test_data.csv"
-    test_id, test_dataset, test_label = load_test_dataset(test_dataset_dir, tokenizer)
-    Re_test_dataset = RE_Dataset(test_dataset, test_label)
+    # test_dataset_dir = "/opt/ml/dataset/test/typed_test_data.csv"
+    # test_id, test_dataset, test_label = load_test_dataset(test_dataset_dir, tokenizer)
+    # Re_test_dataset = RE_Dataset(test_dataset, test_label)
 
     if args.use_data_helper:
         # load custom test dataset
@@ -138,21 +137,40 @@ def main(args):
         custom_output_probs = []
         ensemble_dir = "./ensemble"
 
-        ensemble_dir_list = [
-            './best_model/klue-roberta-large-Fold0',
-            './best_model/klue-roberta-large-Fold1',
-            './best_model/klue-roberta-large-Fold2',
-            './best_model/klue-roberta-large-Fold3'
-        ]
+        # ensemble_dir_list = [
+        #     './best_model/klue-roberta-large-Fold0',
+        #     './best_model/klue-roberta-large-Fold1',
+        #     './best_model/klue-roberta-large-Fold2',
+        #     './best_model/klue-roberta-large-Fold3'
+        # ]
 
+        for folder in os.listdir(ensemble_dir):
+            print('--- Folder Name ---')
+            print(folder)
 
-        # for folder in os.listdir(ensemble_dir):
-        for folder in ensemble_dir_list:
+            test_dataset_dir = "/opt/ml/dataset/test/test_data.csv"
+
+            if 'xlm' in folder:
+                Tokenizer_NAME = 'xlm-roberta-large'
+                tokenizer = XLMRobertaTokenizer.from_pretrained(Tokenizer_NAME)
+            elif 'bert-base' in folder:
+                Tokenizer_NAME = 'klue/bert-base'
+                tokenizer = AutoTokenizer.from_pretrained(Tokenizer_NAME)
+            else:
+                Tokenizer_NAME = 'klue/roberta-large'
+                tokenizer = AutoTokenizer.from_pretrained(Tokenizer_NAME)
+
+            if 'corrected' in folder:
+                test_dataset_dir = "/opt/ml/dataset/test/corrected_test_data.csv"
+            elif 'typed' in folder:
+                test_dataset_dir = "/opt/ml/dataset/test/typed_test_data.csv"
+
+            test_id, test_dataset, test_label = load_test_dataset(test_dataset_dir, tokenizer, folder)
+            Re_test_dataset = RE_Dataset(test_dataset, test_label)
+
             model = AutoModelForSequenceClassification.from_pretrained(
-                # os.path.join(ensemble_dir, folder)
-                folder
+                os.path.join(ensemble_dir, folder)
             )
-            print(model.parameters)
             model.to(device)
             # predict answer
             pred_answer, output_prob = inference(
