@@ -1,29 +1,89 @@
 import pickle as pickle
 import os
 import pandas as pd
-import torch
 import sklearn
+import random
+import wandb
+import argparse
 import numpy as np
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Tuple, Union
+
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from sklearn.utils import class_weight
+from torchsampler import ImbalancedDatasetSampler # https://github.com/ufoym/imbalanced-dataset-sampler
+from torch.utils.data import DataLoader, Dataset, IterableDataset, RandomSampler, SequentialSampler, WeightedRandomSampler
+from torchsummary import summary
 from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score
-from transformers import AutoTokenizer, AutoConfig, AutoModelForSequenceClassification, Trainer, TrainingArguments, RobertaConfig, RobertaTokenizer, RobertaForSequenceClassification, BertTokenizer
+from transformers import (
+    AutoTokenizer,
+    AutoConfig,
+    AutoModelForSequenceClassification,
+    Trainer,
+    TrainingArguments,
+    RobertaConfig,
+    RobertaTokenizer,
+    RobertaForSequenceClassification,
+    BertTokenizer,
+    EarlyStoppingCallback,
+    TrainerCallback,
+)
+from transformers.integrations import WandbCallback # https://huggingface.co/transformers/main_classes/callback.html?highlight=callbacks
+from transformers.file_utils import is_datasets_available, is_sagemaker_mp_enabled
+from torch.cuda.amp import autocast
+from adamp import AdamP
+#from apex import amp
 from load_data import *
 
 
+LABEL_WEIGHTS = None
+LABEL_LIST = [ # in-order
+    "no_relation",
+    "org:top_members/employees",
+    "org:members",
+    "org:product",
+    "per:title",
+    "org:alternate_names",
+    "per:employee_of",
+    "org:place_of_headquarters",
+    "per:product",
+    "org:number_of_employees/members",
+    "per:children",
+    "per:place_of_residence",
+    "per:alternate_names",
+    "per:other_family",
+    "per:colleagues",
+    "per:origin",
+    "per:siblings",
+    "per:spouse",
+    "org:founded",
+    "org:political/religious_affiliation",
+    "org:member_of",
+    "per:parents",
+    "org:dissolved",
+    "per:schools_attended",
+    "per:date_of_death",
+    "per:date_of_birth",
+    "per:place_of_birth",
+    "per:place_of_death",
+    "org:founded_by",
+    "per:religion",
+]
+
+def seed_everything(seed):
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)  # if use multi-GPU
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+    np.random.seed(seed)
+    random.seed(seed)
+
 def klue_re_micro_f1(preds, labels):
     """KLUE-RE micro f1 (except no_relation)"""
-    label_list = ['no_relation', 'org:top_members/employees', 'org:members',
-       'org:product', 'per:title', 'org:alternate_names',
-       'per:employee_of', 'org:place_of_headquarters', 'per:product',
-       'org:number_of_employees/members', 'per:children',
-       'per:place_of_residence', 'per:alternate_names',
-       'per:other_family', 'per:colleagues', 'per:origin', 'per:siblings',
-       'per:spouse', 'org:founded', 'org:political/religious_affiliation',
-       'org:member_of', 'per:parents', 'org:dissolved',
-       'per:schools_attended', 'per:date_of_death', 'per:date_of_birth',
-       'per:place_of_birth', 'per:place_of_death', 'org:founded_by',
-       'per:religion']
-    no_relation_label_idx = label_list.index("no_relation")
-    label_indices = list(range(len(label_list)))
+    no_relation_label_idx = LABEL_LIST.index("no_relation")
+    label_indices = list(range(len(LABEL_LIST)))
     label_indices.remove(no_relation_label_idx)
     return sklearn.metrics.f1_score(labels, preds, average="micro", labels=label_indices) * 100.0
 
@@ -65,73 +125,173 @@ def label_to_num(label):
   
   return num_label
 
+
+class FocalLoss(nn.Module): #V2
+    def __init__(self, alpha=1, gamma=2, logits=False, reduce=True):
+        super(FocalLoss, self).__init__()
+        self.alpha = alpha
+        self.gamma = gamma
+        self.logits = logits
+        self.reduce = reduce
+
+    def forward(self, inputs, targets):
+        ce_loss = nn.CrossEntropyLoss(reduction='none')
+        loss = ce_loss(inputs, targets)
+
+        pt = torch.exp(-loss)
+        F_loss = self.alpha * (1-pt)**self.gamma * loss
+
+        if self.reduce:
+            return torch.mean(F_loss)
+        else:
+            return F_loss
+
+
+class CustomTrainer(Trainer):
+    def training_step(self, model: nn.Module, inputs: Dict[str, Union[torch.Tensor, Any]]):# -> torch.Tensor:
+        """
+        Perform a training step on a batch of inputs.
+
+        Subclass and override to inject custom behavior.
+
+        Args:
+            model (:obj:`nn.Module`):
+                The model to train.
+            inputs (:obj:`Dict[str, Union[torch.Tensor, Any]]`):
+                The inputs and targets of the model.
+
+                The dictionary will be unpacked before being fed to the model. Most models expect the targets under the
+                argument :obj:`labels`. Check your model's documentation for all accepted arguments.
+
+        Return:
+            :obj:`torch.Tensor`: The tensor with training loss on this batch.
+        """
+        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
+        model.train()
+
+        inputs = self._prepare_inputs(inputs)
+        labels = inputs.pop('labels')
+
+        criterion = FocalLoss()
+
+        outputs = model(**inputs)
+        if self.use_amp:
+            with autocast():
+                loss = criterion(outputs['logits'], labels)
+        else:
+            loss = criterion(outputs['logits'], labels)
+
+
+        if self.args.n_gpu > 1:
+            loss = loss.mean()  # mean() to average on multi-gpu parallel training
+
+        if self.args.gradient_accumulation_steps > 1 and not self.deepspeed:
+            # deepspeed handles loss scaling by gradient_accumulation_steps in its `backward`
+            loss = loss / self.args.gradient_accumulation_steps
+
+        if self.use_amp:
+            self.scaler.scale(loss).backward()
+        elif self.deepspeed:
+            # loss gets scaled under gradient_accumulation_steps in deepspeed
+            loss = self.deepspeed.backward(loss)
+        else:
+            loss.backward()
+
+        return loss.detach()
+
+
 def train():
-  # load model and tokenizer
-  # MODEL_NAME = "bert-base-uncased"
-  MODEL_NAME = "klue/bert-base"
-  tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+    seed_everything(42)
+    # load model and tokenizer
+    #MODEL_NAME = "klue/bert-base"
+    MODEL_NAME = "klue/roberta-base"
+    #MODEL_NAME = "xlm-roberta-large"
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 
-  # load dataset
-  train_dataset = load_data("../dataset/train/train.csv")
-  # dev_dataset = load_data("../dataset/train/dev.csv") # validation용 데이터는 따로 만드셔야 합니다.
+    # load dataset
+    train_dataset = load_data("../dataset/train/train.csv")
 
-  train_label = label_to_num(train_dataset['label'].values)
-  # dev_label = label_to_num(dev_dataset['label'].values)
+    train_label = label_to_num(train_dataset["label"].values)
 
-  # tokenizing dataset
-  tokenized_train = tokenized_dataset(train_dataset, tokenizer)
-  # tokenized_dev = tokenized_dataset(dev_dataset, tokenizer)
+    global LABEL_WEIGHTS
+    LABEL_WEIGHTS = class_weight.compute_class_weight(class_weight='balanced', classes=np.unique(train_label), y=train_label)
 
-  # make dataset for pytorch.
-  RE_train_dataset = RE_Dataset(tokenized_train, train_label)
-  # RE_dev_dataset = RE_Dataset(tokenized_dev, dev_label)
+    # tokenizing dataset
+    tokenized_train = tokenized_dataset(train_dataset, tokenizer, model='roberta')
 
-  device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+    # make dataset for pytorch.
+    RE_train_dataset = RE_Dataset(tokenized_train, train_label)
 
-  print(device)
-  # setting model hyperparameter
-  model_config =  AutoConfig.from_pretrained(MODEL_NAME)
-  model_config.num_labels = 30
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-  model =  AutoModelForSequenceClassification.from_pretrained(MODEL_NAME, config=model_config)
-  print(model.config)
-  model.parameters
-  model.to(device)
-  
-  # 사용한 option 외에도 다양한 option들이 있습니다.
-  # https://huggingface.co/transformers/main_classes/trainer.html#trainingarguments 참고해주세요.
-  training_args = TrainingArguments(
-    output_dir='./results',          # output directory
-    save_total_limit=5,              # number of total save model.
-    save_steps=500,                 # model saving step.
-    num_train_epochs=5,              # total number of training epochs
-    learning_rate=5e-5,               # learning_rate
-    per_device_train_batch_size=16,  # batch size per device during training
-    per_device_eval_batch_size=16,   # batch size for evaluation
-    warmup_steps=500,                # number of warmup steps for learning rate scheduler
-    weight_decay=0.01,               # strength of weight decay
-    logging_dir='./logs',            # directory for storing logs
-    logging_steps=100,              # log saving step.
-    evaluation_strategy='steps', # evaluation strategy to adopt during training
-                                # `no`: No evaluation during training.
-                                # `steps`: Evaluate every `eval_steps`.
-                                # `epoch`: Evaluate every end of epoch.
-    eval_steps = 500,            # evaluation step.
-    load_best_model_at_end = True 
-  )
-  trainer = Trainer(
-    model=model,                         # the instantiated 🤗 Transformers model to be trained
-    args=training_args,                  # training arguments, defined above
-    train_dataset=RE_train_dataset,         # training dataset
-    eval_dataset=RE_train_dataset,             # evaluation dataset
-    compute_metrics=compute_metrics         # define metrics function
-  )
+    # setting model hyperparameter
+    model_config = AutoConfig.from_pretrained(MODEL_NAME)
+    model_config.num_labels = 30
 
-  # train model
-  trainer.train()
-  model.save_pretrained('./best_model')
+    model = AutoModelForSequenceClassification.from_pretrained(
+        MODEL_NAME, config=model_config
+    )
+
+    params = model.parameters()
+    optimizer = AdamP(params, lr=5e-5, betas=(0.9, 0.999), weight_decay=1e-2)
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=2250, eta_min=1e-6)
+    
+    #summary(model, (16, 128))
+    #model.parameters
+    model.to(device)
+
+    # 사용한 option 외에도 다양한 option들이 있습니다.
+    # https://huggingface.co/transformers/main_classes/trainer.html#trainingarguments 참고해주세요.
+    training_args = TrainingArguments(
+        seed=42,
+        output_dir="./results",  # output directory
+        save_total_limit=1,  # number of total save model.
+        save_steps=500,  # model saving step.
+        num_train_epochs=6,  # total number of training epochs
+        learning_rate=5e-5,  # learning_rate #5e-5
+        per_device_train_batch_size=64,  # batch size per device during training 64
+        per_device_eval_batch_size=64,  # batch size for evaluation 64
+        warmup_steps=500,  # number of warmup steps for learning rate scheduler
+        weight_decay=0.01,  # strength of weight decay
+        logging_dir="./logs",  # directory for storing logs
+        logging_steps=100,  # log saving step.
+        evaluation_strategy="steps",  # evaluation strategy to adopt during training
+        # `no`: No evaluation during training.
+        # `steps`: Evaluate every `eval_steps`.
+        # `epoch`: Evaluate every end of epoch.
+        eval_steps=500,  # evaluation step.
+        load_best_model_at_end=True,
+        report_to='wandb'
+    )
+
+    trainer = CustomTrainer(
+        model=model,  # the instantiated 🤗 Transformers model to be trained
+        args=training_args,  # training arguments, defined above
+        train_dataset=RE_train_dataset,  # training dataset
+        eval_dataset=RE_train_dataset,  # evaluation dataset
+        compute_metrics=compute_metrics,  # define metrics function
+        callbacks=[EarlyStoppingCallback(early_stopping_patience=3)],#, TrainCallback],
+        optimizers=(optimizer, scheduler)
+    )
+
+    # train model
+    trainer.train()
+    model.save_pretrained("./best_model")
+
 def main():
-  train()
+    train()
 
-if __name__ == '__main__':
-  main()
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument('--wandb_project', type=str, default='klue-re', help='wandb project name (default: klue-re')
+
+    args = parser.parse_args()
+    # 1. Start a new run
+    #os.environ['WANDB_WATCH'] = 'all'
+    wandb.init(project=args.wandb_project, entity='goattier', name='AdamP + Focal + cosAnnealingLR')
+
+    main()
+
+    wandb.finish()
