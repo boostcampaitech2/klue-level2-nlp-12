@@ -275,13 +275,17 @@ def train(args):
 
         # train model
         # trainer.train()
-        trainer.hyperparameter_search(
-            direction='minimize',
+        best_run = trainer.hyperparameter_search(
+            direction='maximize', # maximize metrics
             hp_space=ray_hp_space,
             # hp_space=optuna_hp_space,
-            backend='ray'
+            backend='ray',
+            n_trials=10
             # backend='optuna'
         )
+
+        print(best_run)
+
         # model.save_pretrained(args.save_name + "/" + TIME + "/" + TITLE + "-Fold" + str(fold))
         #
         if args.set_wandb:

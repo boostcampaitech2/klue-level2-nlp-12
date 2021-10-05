@@ -110,9 +110,9 @@ def ray_hp_space(trial):
     '''
     return {
         "learning_rate": tune.loguniform(5e-6, 5e-4),
-        "num_train_epochs": tune.choice(range(1, 6)),
-        "per_device_train_batch_size": tune.choice([32, 64, 128]),
-        "seed": tune.choice(range(1, 43)),
+        "num_train_epochs": tune.choice(range(5, 7)),
+        "per_device_train_batch_size": tune.choice([32, 64, 128, 256]),
+        # "seed": tune.choice(range(10, 43)),
     }
 
 def optuna_hp_space(trial):
