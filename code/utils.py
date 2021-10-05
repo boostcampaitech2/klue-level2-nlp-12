@@ -109,9 +109,9 @@ def ray_hp_space(trial):
     :return:
     '''
     return {
-        "learning_rate": tune.loguniform(5e-6, 5e-4),
+        "learning_rate": tune.loguniform(5e-5, 5e-4),
         "num_train_epochs": tune.choice(range(5, 7)),
-        "per_device_train_batch_size": tune.choice([32, 64, 128, 256]),
+        "per_device_train_batch_size": tune.choice([32, 50, 64]),
         # "seed": tune.choice(range(10, 43)),
     }
 

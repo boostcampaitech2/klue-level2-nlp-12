@@ -146,9 +146,7 @@ def model_init():
     '''
     model_config = AutoConfig.from_pretrained('klue/roberta-large')
     model_config.num_labels = 30
-    model = AutoModelForSequenceClassification.from_pretrained('klue/roberta-large', config=model_config)
-    model.resize_token_embeddings(32000)
-    return model
+    return AutoModelForSequenceClassification.from_pretrained('klue/roberta-large', config=model_config)
 
 def train(args):
     # load model and tokenizer
@@ -167,9 +165,9 @@ def train(args):
 
     # tokenizer = BertTokenizer.from_pretrained(MODEL_NAME)
     # tokenizer = RobertaTokenizer.from_pretrained(MODEL_NAME)
-    # tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
-    # tokenizer = XLMRobertaTokenizer.from_pretrained(MODEL_NAME)
     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+    # tokenizer = XLMRobertaTokenizer.from_pretrained(MODEL_NAME)
+    # tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
     
     # load dataset
     # train_dataset, dev_dataset = load_data("../dataset/train/train.csv")
@@ -204,17 +202,17 @@ def train(args):
         print(device)
 
         # setting model hyperparameter
-        model_config = AutoConfig.from_pretrained(MODEL_NAME)
+        # model_config = AutoConfig.from_pretrained(MODEL_NAME)
         # model_config = XLMRobertaConfig.from_pretrained(MODEL_NAME)
-        model_config.num_labels = 30
+        # model_config.num_labels = 30
 
         # model = XLMRobertaForSequenceClassification.from_pretrained(MODEL_NAME, config=model_config)
-        model = AutoModelForSequenceClassification.from_pretrained(
-            MODEL_NAME, config=model_config
-        )
+        # model = AutoModelForSequenceClassification.from_pretrained(
+        #     MODEL_NAME, config=model_config
+        # )
 
         # model = RobertaForSequenceClassification.from_pretrained(MODEL_NAME, config=model_config)
-        print(model.config)
+        # print(model.config)
 
         # [ENT], [/ENT] 스페셜 토큰 추가하면서 vocab size + 2
         # model.resize_token_embeddings(len(new_tokenizer))
@@ -261,6 +259,8 @@ def train(args):
             dataloader_num_workers=4,
             report_to=reported_to,  # wandb사용
             run_name=RAN_NAME,
+            gradient_accumulation_steps=2,
+            eval_accumulation_steps=1,
         )
         trainer = Trainer(
             # the instantiated 🤗 Transformers model to be trained
@@ -280,7 +280,7 @@ def train(args):
             hp_space=ray_hp_space,
             # hp_space=optuna_hp_space,
             backend='ray',
-            n_trials=10
+            n_trials=8
             # backend='optuna'
         )
 
