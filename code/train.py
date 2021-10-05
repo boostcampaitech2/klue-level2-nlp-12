@@ -144,10 +144,10 @@ def model_init():
     '''
     A function for calling pretrained model when searching best hyperparameters
     '''
-    model_config = AutoConfig.from_pretrained('klue/roberta-base')
+    model_config = AutoConfig.from_pretrained('klue/roberta-large')
     model_config.num_labels = 30
-    model = AutoModelForSequenceClassification.from_pretrained('klue/roberta-base', config=model_config)
-    model.resize_token_embeddings(32002)
+    model = AutoModelForSequenceClassification.from_pretrained('klue/roberta-large', config=model_config)
+    model.resize_token_embeddings(32000)
     return model
 
 def train(args):
