@@ -1,0 +1,161 @@
+2021-10-05 17:21:53,610 INFO    MainThread:18219 [wandb_setup.py:_flush():69] setting env: {}
+2021-10-05 17:21:53,610 INFO    MainThread:18219 [wandb_setup.py:_flush():69] setting login settings: {}
+2021-10-05 17:21:53,610 INFO    MainThread:18219 [wandb_init.py:_log_setup():348] Logging user logs to /opt/ml/klue-level2-nlp-12/code/wandb/run-20211005_172153-1zmevdg2/logs/debug.log
+2021-10-05 17:21:53,611 INFO    MainThread:18219 [wandb_init.py:_log_setup():349] Logging internal logs to /opt/ml/klue-level2-nlp-12/code/wandb/run-20211005_172153-1zmevdg2/logs/debug-internal.log
+2021-10-05 17:21:53,611 INFO    MainThread:18219 [wandb_init.py:init():381] calling init triggers
+2021-10-05 17:21:53,611 INFO    MainThread:18219 [wandb_init.py:init():386] wandb.init called with sweep_config: {}
+config: {}
+2021-10-05 17:21:53,611 INFO    MainThread:18219 [wandb_init.py:init():430] starting backend
+2021-10-05 17:21:53,611 INFO    MainThread:18219 [backend.py:_multiprocessing_setup():70] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2021-10-05 17:21:53,623 INFO    MainThread:18219 [backend.py:ensure_launched():135] starting backend process...
+2021-10-05 17:21:53,635 INFO    MainThread:18219 [backend.py:ensure_launched():139] started backend process with pid: 18249
+2021-10-05 17:21:53,636 INFO    MainThread:18219 [wandb_init.py:init():435] backend started and connected
+2021-10-05 17:21:53,638 INFO    MainThread:18219 [wandb_init.py:init():494] updated telemetry
+2021-10-05 17:21:53,638 INFO    MainThread:18219 [wandb_init.py:init():517] communicating current version
+2021-10-05 17:21:54,278 INFO    MainThread:18219 [wandb_init.py:init():522] got version response upgrade_message: "wandb version 0.12.4 is available!  To upgrade, please run:\n $ pip install wandb --upgrade"
+
+2021-10-05 17:21:54,278 INFO    MainThread:18219 [wandb_init.py:init():530] communicating run to backend with 30 second timeout
+2021-10-05 17:21:54,519 INFO    MainThread:18219 [wandb_init.py:init():557] starting run threads in backend
+2021-10-05 17:21:58,090 INFO    MainThread:18219 [wandb_run.py:_console_start():1605] atexit reg
+2021-10-05 17:21:58,091 INFO    MainThread:18219 [wandb_run.py:_redirect():1479] redirect: SettingsConsole.REDIRECT
+2021-10-05 17:21:58,091 INFO    MainThread:18219 [wandb_run.py:_redirect():1484] Redirecting console.
+2021-10-05 17:21:58,093 INFO    MainThread:18219 [wandb_run.py:_redirect():1540] Redirects installed.
+2021-10-05 17:21:58,093 INFO    MainThread:18219 [wandb_init.py:init():582] run started, returning control to user process
+2021-10-05 17:22:52,677 INFO    MainThread:18219 [wandb_run.py:_config_callback():847] config_cb None None {'return_dict': True, 'output_hidden_states': False, 'output_attentions': False, 'torchscript': False, 'torch_dtype': None, 'use_bfloat16': False, 'pruned_heads': {}, 'tie_word_embeddings': True, 'is_encoder_decoder': False, 'is_decoder': False, 'add_cross_attention': False, 'tie_encoder_decoder': False, 'max_length': 20, 'min_length': 0, 'do_sample': False, 'early_stopping': False, 'num_beams': 1, 'num_beam_groups': 1, 'diversity_penalty': 0.0, 'temperature': 1.0, 'top_k': 50, 'top_p': 1.0, 'repetition_penalty': 1.0, 'length_penalty': 1.0, 'no_repeat_ngram_size': 0, 'encoder_no_repeat_ngram_size': 0, 'bad_words_ids': None, 'num_return_sequences': 1, 'chunk_size_feed_forward': 0, 'output_scores': False, 'return_dict_in_generate': False, 'forced_bos_token_id': None, 'forced_eos_token_id': None, 'remove_invalid_values': False, 'architectures': ['BertForPretraining'], 'finetuning_task': None, 'id2label': {0: 'LABEL_0', 1: 'LABEL_1', 2: 'LABEL_2', 3: 'LABEL_3', 4: 'LABEL_4', 5: 'LABEL_5', 6: 'LABEL_6', 7: 'LABEL_7', 8: 'LABEL_8', 9: 'LABEL_9', 10: 'LABEL_10', 11: 'LABEL_11', 12: 'LABEL_12', 13: 'LABEL_13', 14: 'LABEL_14', 15: 'LABEL_15', 16: 'LABEL_16', 17: 'LABEL_17', 18: 'LABEL_18', 19: 'LABEL_19', 20: 'LABEL_20', 21: 'LABEL_21', 22: 'LABEL_22', 23: 'LABEL_23', 24: 'LABEL_24', 25: 'LABEL_25', 26: 'LABEL_26', 27: 'LABEL_27', 28: 'LABEL_28', 29: 'LABEL_29'}, 'label2id': {'LABEL_0': 0, 'LABEL_1': 1, 'LABEL_2': 2, 'LABEL_3': 3, 'LABEL_4': 4, 'LABEL_5': 5, 'LABEL_6': 6, 'LABEL_7': 7, 'LABEL_8': 8, 'LABEL_9': 9, 'LABEL_10': 10, 'LABEL_11': 11, 'LABEL_12': 12, 'LABEL_13': 13, 'LABEL_14': 14, 'LABEL_15': 15, 'LABEL_16': 16, 'LABEL_17': 17, 'LABEL_18': 18, 'LABEL_19': 19, 'LABEL_20': 20, 'LABEL_21': 21, 'LABEL_22': 22, 'LABEL_23': 23, 'LABEL_24': 24, 'LABEL_25': 25, 'LABEL_26': 26, 'LABEL_27': 27, 'LABEL_28': 28, 'LABEL_29': 29}, 'tokenizer_class': None, 'prefix': None, 'bos_token_id': None, 'pad_token_id': 0, 'eos_token_id': None, 'sep_token_id': None, 'decoder_start_token_id': None, 'task_specific_params': None, 'problem_type': None, '_name_or_path': 'klue/bert-base', 'transformers_version': '4.10.0', 'model_type': 'bert', 'vocab_size': 32000, 'hidden_size': 768, 'num_hidden_layers': 12, 'num_attention_heads': 12, 'hidden_act': 'gelu', 'intermediate_size': 3072, 'hidden_dropout_prob': 0.1, 'attention_probs_dropout_prob': 0.1, 'max_position_embeddings': 512, 'type_vocab_size': 2, 'initializer_range': 0.02, 'layer_norm_eps': 1e-12, 'gradient_checkpointing': False, 'position_embedding_type': 'absolute', 'use_cache': True, 'classifier_dropout': None, 'output_dir': './results', 'overwrite_output_dir': False, 'do_train': False, 'do_eval': True, 'do_predict': False, 'evaluation_strategy': 'steps', 'prediction_loss_only': False, 'per_device_train_batch_size': 64, 'per_device_eval_batch_size': 64, 'per_gpu_train_batch_size': 'None', 'per_gpu_eval_batch_size': 'None', 'gradient_accumulation_steps': 1, 'eval_accumulation_steps': 'None', 'learning_rate': 5e-05, 'weight_decay': 0.01, 'adam_beta1': 0.9, 'adam_beta2': 0.999, 'adam_epsilon': 1e-08, 'max_grad_norm': 1.0, 'num_train_epochs': 6, 'max_steps': -1, 'lr_scheduler_type': 'linear', 'warmup_ratio': 0.0, 'warmup_steps': 500, 'log_level': -1, 'log_level_replica': -1, 'log_on_each_node': True, 'logging_dir': './logs', 'logging_strategy': 'steps', 'logging_first_step': False, 'logging_steps': 100, 'save_strategy': 'steps', 'save_steps': 500, 'save_total_limit': 1, 'save_on_each_node': False, 'no_cuda': False, 'seed': 42, 'fp16': False, 'fp16_opt_level': 'O1', 'fp16_backend': 'auto', 'fp16_full_eval': False, 'local_rank': -1, 'tpu_num_cores': 'None', 'tpu_metrics_debug': False, 'debug': '[]', 'dataloader_drop_last': False, 'eval_steps': 500, 'dataloader_num_workers': 0, 'past_index': -1, 'run_name': './results', 'disable_tqdm': False, 'remove_unused_columns': True, 'label_names': 'None', 'load_best_model_at_end': True, 'metric_for_best_model': 'loss', 'greater_is_better': False, 'ignore_data_skip': False, 'sharded_ddp': '[]', 'deepspeed': 'None', 'label_smoothing_factor': 0.0, 'adafactor': False, 'group_by_length': False, 'length_column_name': 'length', 'report_to': "['wandb']", 'ddp_find_unused_parameters': 'None', 'dataloader_pin_memory': True, 'skip_memory_metrics': True, 'use_legacy_prediction_loop': False, 'push_to_hub': False, 'resume_from_checkpoint': 'None', 'push_to_hub_model_id': 'results', 'push_to_hub_organization': 'None', 'push_to_hub_token': 'None', '_n_gpu': 1, 'mp_parameters': '', 'train_batch_size': 64, 'eval_batch_size': 64}
+2021-10-05 17:22:52,680 INFO    MainThread:18219 [wandb_watch.py:watch():43] Watching
+2021-10-05 17:22:53,483 INFO    MainThread:18219 [wandb_run.py:_atexit_cleanup():1575] got exitcode: 255
+2021-10-05 17:22:53,484 INFO    MainThread:18219 [wandb_run.py:_restore():1547] restore
+2021-10-05 17:22:56,084 INFO    MainThread:18219 [wandb_run.py:_wait_for_finish():1697] got exit ret: file_counts {
+  wandb_count: 1
+}
+pusher_stats {
+  uploaded_bytes: 719
+  total_bytes: 719
+}
+
+2021-10-05 17:22:56,193 INFO    MainThread:18219 [wandb_run.py:_wait_for_finish():1697] got exit ret: file_counts {
+  wandb_count: 1
+}
+pusher_stats {
+  uploaded_bytes: 719
+  total_bytes: 719
+}
+
+2021-10-05 17:22:56,481 INFO    MainThread:18219 [wandb_run.py:_wait_for_finish():1697] got exit ret: file_counts {
+  wandb_count: 1
+}
+pusher_stats {
+  uploaded_bytes: 719
+  total_bytes: 719
+}
+
+2021-10-05 17:22:56,582 INFO    MainThread:18219 [wandb_run.py:_wait_for_finish():1697] got exit ret: file_counts {
+  wandb_count: 5
+}
+pusher_stats {
+  uploaded_bytes: 719
+  total_bytes: 16015
+}
+
+2021-10-05 17:22:56,684 INFO    MainThread:18219 [wandb_run.py:_wait_for_finish():1697] got exit ret: file_counts {
+  wandb_count: 5
+}
+pusher_stats {
+  uploaded_bytes: 719
+  total_bytes: 16015
+}
+
+2021-10-05 17:22:56,785 INFO    MainThread:18219 [wandb_run.py:_wait_for_finish():1697] got exit ret: file_counts {
+  wandb_count: 5
+}
+pusher_stats {
+  uploaded_bytes: 719
+  total_bytes: 16015
+}
+
+2021-10-05 17:22:56,887 INFO    MainThread:18219 [wandb_run.py:_wait_for_finish():1697] got exit ret: file_counts {
+  wandb_count: 5
+}
+pusher_stats {
+  uploaded_bytes: 11130
+  total_bytes: 16015
+}
+
+2021-10-05 17:22:56,989 INFO    MainThread:18219 [wandb_run.py:_wait_for_finish():1697] got exit ret: file_counts {
+  wandb_count: 5
+}
+pusher_stats {
+  uploaded_bytes: 11130
+  total_bytes: 16015
+}
+
+2021-10-05 17:22:57,090 INFO    MainThread:18219 [wandb_run.py:_wait_for_finish():1697] got exit ret: file_counts {
+  wandb_count: 5
+}
+pusher_stats {
+  uploaded_bytes: 16015
+  total_bytes: 16015
+}
+
+2021-10-05 17:22:57,192 INFO    MainThread:18219 [wandb_run.py:_wait_for_finish():1697] got exit ret: file_counts {
+  wandb_count: 5
+}
+pusher_stats {
+  uploaded_bytes: 16015
+  total_bytes: 16015
+}
+
+2021-10-05 17:22:57,293 INFO    MainThread:18219 [wandb_run.py:_wait_for_finish():1697] got exit ret: file_counts {
+  wandb_count: 5
+}
+pusher_stats {
+  uploaded_bytes: 16015
+  total_bytes: 16015
+}
+
+2021-10-05 17:22:57,394 INFO    MainThread:18219 [wandb_run.py:_wait_for_finish():1697] got exit ret: file_counts {
+  wandb_count: 5
+}
+pusher_stats {
+  uploaded_bytes: 16015
+  total_bytes: 16015
+}
+
+2021-10-05 17:22:57,496 INFO    MainThread:18219 [wandb_run.py:_wait_for_finish():1697] got exit ret: file_counts {
+  wandb_count: 5
+}
+pusher_stats {
+  uploaded_bytes: 16015
+  total_bytes: 16015
+}
+
+2021-10-05 17:22:57,597 INFO    MainThread:18219 [wandb_run.py:_wait_for_finish():1697] got exit ret: file_counts {
+  wandb_count: 5
+}
+pusher_stats {
+  uploaded_bytes: 16015
+  total_bytes: 16015
+}
+
+2021-10-05 17:22:58,082 INFO    MainThread:18219 [wandb_run.py:_wait_for_finish():1697] got exit ret: file_counts {
+  wandb_count: 5
+}
+pusher_stats {
+  uploaded_bytes: 16015
+  total_bytes: 16015
+}
+
+2021-10-05 17:22:58,547 INFO    MainThread:18219 [wandb_run.py:_wait_for_finish():1697] got exit ret: done: true
+exit_result {
+}
+file_counts {
+  wandb_count: 5
+}
+pusher_stats {
+  uploaded_bytes: 16015
+  total_bytes: 16015
+}
+local_info {
+}
+
+2021-10-05 17:22:59,662 INFO    MainThread:18219 [wandb_run.py:_show_files():1947] logging synced files
