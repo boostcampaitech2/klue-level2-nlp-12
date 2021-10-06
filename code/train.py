@@ -12,9 +12,15 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from sklearn.utils import class_weight
+<<<<<<< HEAD
 # from torchsampler import ImbalancedDatasetSampler # https://github.com/ufoym/imbalanced-dataset-sampler
 from torch.utils.data import DataLoader, Dataset, IterableDataset, RandomSampler, SequentialSampler, WeightedRandomSampler
 # from torchsummary import summary
+=======
+from torchsampler import ImbalancedDatasetSampler # https://github.com/ufoym/imbalanced-dataset-sampler
+from torch.utils.data import DataLoader, Dataset, IterableDataset, RandomSampler, SequentialSampler, WeightedRandomSampler
+from torchsummary import summary
+>>>>>>> 6685d1faf9a05bc8109a6a51293887ce34d7c5e9
 from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score
 from transformers import (
     AutoTokenizer,
@@ -37,7 +43,10 @@ from adamp import AdamP
 from load_data import *
 
 
+<<<<<<< HEAD
 LABEL_WEIGHTS = None
+=======
+>>>>>>> 6685d1faf9a05bc8109a6a51293887ce34d7c5e9
 LABEL_LIST = [ # in-order
     "no_relation",
     "org:top_members/employees",
@@ -125,7 +134,6 @@ def label_to_num(label):
   
   return num_label
 
-
 class FocalLoss(nn.Module): #V2
     def __init__(self, alpha=1, gamma=2, logits=False, reduce=True):
         super(FocalLoss, self).__init__()
@@ -201,24 +209,19 @@ class CustomTrainer(Trainer):
         return loss.detach()
 
 
-def train():
-    seed_everything(42)
+def train(args):
     # load model and tokenizer
     #MODEL_NAME = "klue/bert-base"
-    MODEL_NAME = "klue/bert-base"
+    #MODEL_NAME = "klue/roberta-base"
     #MODEL_NAME = "xlm-roberta-large"
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+    tokenizer = AutoTokenizer.from_pretrained(args.model)
 
     # load dataset
-    train_dataset = load_data("/opt/ml/dataset/train/other_falimy_criterion_train.csv")
-
+    train_dataset = load_data("../dataset/train/train.csv")
     train_label = label_to_num(train_dataset["label"].values)
 
-    global LABEL_WEIGHTS
-    LABEL_WEIGHTS = class_weight.compute_class_weight(class_weight='balanced', classes=np.unique(train_label), y=train_label)
-
     # tokenizing dataset
-    tokenized_train = tokenized_dataset(train_dataset, tokenizer, token_type='punct_typed_entity', model='klue')
+    tokenized_train = tokenized_dataset(train_dataset, tokenizer, model='roberta')
 
     # make dataset for pytorch.
     RE_train_dataset = RE_Dataset(tokenized_train, train_label)
@@ -226,41 +229,46 @@ def train():
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     # setting model hyperparameter
-    model_config = AutoConfig.from_pretrained(MODEL_NAME)
+    model_config = AutoConfig.from_pretrained(args.model)
     model_config.num_labels = 30
 
     model = AutoModelForSequenceClassification.from_pretrained(
-        MODEL_NAME, config=model_config
+        args.model, config=model_config
     )
 
     params = model.parameters()
-    optimizer = AdamP(params, lr=5e-5, betas=(0.9, 0.999), weight_decay=1e-2)
-    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=5900, eta_min=1e-6)
+    optimizer = AdamP(params, lr=args.lr, betas=(0.9, 0.999), weight_decay=args.weight_decay)
+
+    epoch_steps = len(train_label) // args.train_batch_size
+    t_max = (epoch_steps * args.epochs)
+    print('=========================')
+    print(f'T_max : {t_max}')
+    print('=========================')
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=t_max, eta_min=1e-6)
     
-    #summary(model, (16, 128))
     #model.parameters
     model.to(device)
 
     # 사용한 option 외에도 다양한 option들이 있습니다.
     # https://huggingface.co/transformers/main_classes/trainer.html#trainingarguments 참고해주세요.
     training_args = TrainingArguments(
-        seed=42,
-        output_dir="./results",  # output directory
-        save_total_limit=1,  # number of total save model.
-        save_steps=500,  # model saving step.
-        num_train_epochs=6,  # total number of training epochs
-        learning_rate=5e-5,  # learning_rate #5e-5
-        per_device_train_batch_size=64,  # batch size per device during training 64
-        per_device_eval_batch_size=64,  # batch size for evaluation 64
-        warmup_steps=500,  # number of warmup steps for learning rate scheduler
-        weight_decay=0.01,  # strength of weight decay
-        logging_dir="./logs",  # directory for storing logs
-        logging_steps=100,  # log saving step.
-        evaluation_strategy="steps",  # evaluation strategy to adopt during training
+        seed=args.seed,
+        output_dir=args.output_dir,  # output directory
+        save_total_limit=args.save_total_limit,  # number of total save model.
+        save_steps=args.save_steps,  # model saving step.
+        num_train_epochs=args.epochs,  # total number of training epochs
+        learning_rate=args.lr,  # learning_rate #5e-5
+        per_device_train_batch_size=args.train_batch_size,  # batch size per device during training 64
+        per_device_eval_batch_size=args.eval_batch_size,  # batch size for evaluation 64
+        warmup_steps=args.warmup_steps,  # number of warmup steps for learning rate scheduler
+        weight_decay=args.weight_decay,  # strength of weight decay
+        logging_dir=args.logging_dir,  # directory for storing logs
+        logging_steps=args.logging_steps,  # log saving step.
+        evaluation_strategy=args.evaluation_strategy,  # evaluation strategy to adopt during training
         # `no`: No evaluation during training.
         # `steps`: Evaluate every `eval_steps`.
         # `epoch`: Evaluate every end of epoch.
-        eval_steps=500,  # evaluation step.
+        eval_steps=args.eval_steps,  # evaluation step.
         load_best_model_at_end=True,
         report_to='wandb'
     )
@@ -277,21 +285,43 @@ def train():
 
     # train model
     trainer.train()
-    model.save_pretrained("./best_model")
+    model.save_pretrained(args.best_model_dir)
 
-def main():
-    train()
+def main(args):
+    seed_everything(args.seed)
+    train(args)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('--wandb_project', type=str, default='klue-re', help='wandb project name (default: klue-re')
-
+    # train args
+    parser.add_argument("--seed", type=int, default=42, help="seed value (default: 42)")
+    parser.add_argument("--model", type=str, default="klue/roberta-large", help="model type (default: klue/roberta-large)")
+    parser.add_argument("--output_dir", type=str, default="./results", help="output directory (default: ./results)")
+    parser.add_argument("--save_total_limit", type=int, default=3, help="number of total save model (default: 3)")
+    parser.add_argument("--save_steps", type=int, default=500, help="model saving step (default: 500)")
+    parser.add_argument("--epochs", type=int, default=5, help="number of epochs to train (default: 5)")
+    parser.add_argument("--lr", type=float, default=5e-5, help="learning rate (default: 5e-5)")
+    parser.add_argument("--train_batch_size", type=int, default=64, help="train batch size (default: 64)")
+    parser.add_argument("--eval_batch_size", type=int, default=64, help="eval batch size (default: 64)")
+    parser.add_argument("--warmup_steps", type=int, default=500, help="lambda lr scheduler warmup steps (default: 500)")
+    parser.add_argument("--weight_decay", type=float, default=1e-2, help="adam optimizer weight decay (default: 1e-2)")
+    parser.add_argument("--logging_dir", type=str, default="./logs", help="log directory (default: ./logs)")
+    parser.add_argument("--logging_steps", type=int, default=100, help="log saving step (default: 100)")
+    parser.add_argument("--evaluation_strategy", type=str, default="steps",
+        help="""evaluation strategy to adopt during training (default: step)
+                `no`: No evaluation during training.
+                `steps`: Evaluate every `eval_steps`.
+                `epoch`: Evaluate every end of epoch.""",
+    )
+    parser.add_argument("--eval_steps", type=int, default=500, help="evaluation step (default: 500)")
+    parser.add_argument("--best_model_dir", type=str, default="./best_model", help="best model direcotry(default: ./best_model")
+    
     args = parser.parse_args()
     # 1. Start a new run
     #os.environ['WANDB_WATCH'] = 'all'
-    wandb.init(project=args.wandb_project, entity='jadon', name='AdamP + Focal + cosAnnealingLR')
+    wandb.init(project=args.wandb_project, entity=_, name=_)
 
-    main()
+    main(args)
 
     wandb.finish()
