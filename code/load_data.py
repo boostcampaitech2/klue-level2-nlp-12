@@ -161,7 +161,7 @@ def tokenized_dataset(dataset, tokenizer, token_type, model):
 
     tokenized_sentences = None
     
-    if model=='klue':
+    if model=='bert':
         tokenized_sentences = tokenizer(
             concat_entity,
             list(dataset["sentence"]),
