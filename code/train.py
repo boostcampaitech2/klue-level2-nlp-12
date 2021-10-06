@@ -231,7 +231,7 @@ def train(args):
     optimizer = AdamP(params, lr=args.lr, betas=(0.9, 0.999), weight_decay=args.weight_decay)
 
     epoch_steps = len(train_label) // args.train_batch_size
-    t_max = (epoch_steps * args.epoch)
+    t_max = (epoch_steps * args.epochs)
     print('=========================')
     print(f'T_max : {t_max}')
     print('=========================')
