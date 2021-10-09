@@ -71,6 +71,13 @@ LABEL_LIST = [ # in-order
 ]
 
 def seed_everything(seed):
+    """
+    fix seed.
+
+    Args:
+        seed (int):
+            seed number
+    """
     torch.manual_seed(seed)
     torch.cuda.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)  # if use multi-GPU
@@ -80,14 +87,39 @@ def seed_everything(seed):
     random.seed(seed)
 
 def klue_re_micro_f1(preds, labels):
-    """KLUE-RE micro f1 (except no_relation)"""
+    """
+    KLUE-RE micro f1 (except no_relation)
+
+    Args:
+        preds (:obj: 1d array-like): 
+            Estimated target labels. [n_samples,]
+        labels (:obj: 1d array-like): 
+            Ground truth (correct) target labels. [n_samples,]    
+
+    Returns:
+        (float): 
+            micro average of the F1 scores of each label for the multilabel task (no_relation excluded).
+    """
     no_relation_label_idx = LABEL_LIST.index("no_relation")
     label_indices = list(range(len(LABEL_LIST)))
     label_indices.remove(no_relation_label_idx)
     return sklearn.metrics.f1_score(labels, preds, average="micro", labels=label_indices) * 100.0
 
 def klue_re_auprc(probs, labels):
-    """KLUE-RE AUPRC (with no_relation)"""
+    """
+    KLUE-RE AUPRC (with no_relation)
+
+    Args:
+        probs (:obj: 2d array-like):
+            Estimated logits of the model for each target label. [n_samples, n_label]
+        labels (:obj: 1d array-like): 
+            Ground truth (correct) target labels. [n_samples,]
+
+    Returns:
+        (float): 
+            AUPRC score of RE task (no_relation included).
+    """    
+    """"""
     labels = np.eye(30)[labels]
 
     score = np.zeros((30,))
@@ -99,33 +131,60 @@ def klue_re_auprc(probs, labels):
     return np.average(score) * 100.0
 
 def compute_metrics(pred):
-  """ validation을 위한 metrics function """
-  labels = pred.label_ids
-  preds = pred.predictions.argmax(-1)
-  probs = pred.predictions
+    """
+    metric functions for validation. 
+    used in huggingface Trainer class.
 
-  # calculate accuracy using sklearn's function
-  f1 = klue_re_micro_f1(preds, labels)
-  auprc = klue_re_auprc(probs, labels)
-  acc = accuracy_score(labels, preds) # 리더보드 평가에는 포함되지 않습니다.
+    Args:
+        pred (:obj: EvalPrediction): 
+            Evaluation output contains predictions and label_ids.
 
-  return {
-      'micro f1 score': f1,
-      'auprc' : auprc,
-      'accuracy': acc,
-  }
+            predictions (:obj: 2d array-like):
+                Estimated logits of the model for each target label. [n_samples, n_label]
+            label_ids (:obj: 1d array-like):
+                Ground truth (correct) target labels. [n_samples,]
+
+    Returns:
+        (dict):
+            contains micro f1 score, auprc, accuracy.
+    """    
+    labels = pred.label_ids
+    preds = pred.predictions.argmax(-1)
+    probs = pred.predictions
+
+    # calculate accuracy using sklearn's function
+    f1 = klue_re_micro_f1(preds, labels)
+    auprc = klue_re_auprc(probs, labels)
+    acc = accuracy_score(labels, preds) # 리더보드 평가에는 포함되지 않습니다.
+
+    return {
+        'micro f1 score': f1,
+        'auprc' : auprc,
+        'accuracy': acc,
+    }
 
 def label_to_num(label):
-  num_label = []
-  with open('dict_label_to_num.pkl', 'rb') as f:
-    dict_label_to_num = pickle.load(f)
-  for v in label:
-    num_label.append(dict_label_to_num[v])
+    """
+    map string type label to int type label(index).
+
+    Args:
+        label (:obj: 1d array-like): 
+            string type labels.
+
+    Returns:
+        num_label (:obj: 1d array-like):
+            int type labels(index).
+    """
+    num_label = []
+    with open('dict_label_to_num.pkl', 'rb') as f:
+        dict_label_to_num = pickle.load(f)
+    for v in label:
+        num_label.append(dict_label_to_num[v])
   
-  return num_label
+    return num_label
 
 
-class FocalLoss(nn.Module): #V2
+class FocalLoss(nn.Module):
     def __init__(self, alpha=1, gamma=2, logits=False, reduce=True):
         super(FocalLoss, self).__init__()
         self.alpha = alpha
@@ -147,7 +206,7 @@ class FocalLoss(nn.Module): #V2
 
 
 class CustomTrainer(Trainer):
-    def training_step(self, model: nn.Module, inputs: Dict[str, Union[torch.Tensor, Any]]):# -> torch.Tensor:
+    def training_step(self, model: nn.Module, inputs: Dict[str, Union[torch.Tensor, Any]]):
         """
         Perform a training step on a batch of inputs.
 
@@ -163,7 +222,8 @@ class CustomTrainer(Trainer):
                 argument :obj:`labels`. Check your model's documentation for all accepted arguments.
 
         Return:
-            :obj:`torch.Tensor`: The tensor with training loss on this batch.
+            (:obj:`torch.Tensor`):
+                The tensor with training loss on this batch.
         """
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -208,7 +268,7 @@ def train(args):
     tokenizer = AutoTokenizer.from_pretrained(args.model)
 
     # load dataset
-    train_dataset = load_data("../dataset/train/train.csv")
+    train_dataset = load_data(args.train_data_dir)
     train_label = label_to_num(train_dataset["label"].values)
 
     # tokenizing dataset
@@ -227,9 +287,11 @@ def train(args):
         args.model, config=model_config
     )
 
+    # setting optimizer
     params = model.parameters()
     optimizer = AdamP(params, lr=args.lr, betas=(0.9, 0.999), weight_decay=args.weight_decay)
 
+    # setting learning rate scheduler
     epoch_steps = len(train_label) // args.train_batch_size
     t_max = (epoch_steps * args.epochs)
     print('=========================')
@@ -260,8 +322,8 @@ def train(args):
         # `steps`: Evaluate every `eval_steps`.
         # `epoch`: Evaluate every end of epoch.
         eval_steps=args.eval_steps,  # evaluation step.
-        load_best_model_at_end=True,
-        report_to='wandb'
+        load_best_model_at_end=True,  # Whether or not to load the best model found during training at the end of training.
+        report_to='wandb'  # log visualization tool.
     )
 
     trainer = CustomTrainer(
@@ -270,8 +332,8 @@ def train(args):
         train_dataset=RE_train_dataset,  # training dataset
         eval_dataset=RE_train_dataset,  # evaluation dataset
         compute_metrics=compute_metrics,  # define metrics function
-        callbacks=[EarlyStoppingCallback(early_stopping_patience=3)],#, TrainCallback],
-        optimizers=(optimizer, scheduler)
+        callbacks=[EarlyStoppingCallback(early_stopping_patience=3)],  # callbacks
+        optimizers=(optimizer, scheduler)  # optimizer and scheduler. fill with _ if you wanna use default setting.
     )
 
     # train model
@@ -308,7 +370,12 @@ if __name__ == "__main__":
     parser.add_argument("--eval_steps", type=int, default=500, help="evaluation step (default: 500)")
     parser.add_argument("--best_model_dir", type=str, default="./best_model", help="best model direcotry(default: ./best_model")
     
+    # Container environment
+    parser.add_argument('--train_data_dir', type=str, default="../dataset/train/train.csv",
+                        help="train data directory (default: ../dataset/train/train.csv)")
+
     args = parser.parse_args()
+
     # 1. Start a new run
     #os.environ['WANDB_WATCH'] = 'all'
     wandb.init(project=args.wandb_project, entity=_, name=_)
