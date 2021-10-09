@@ -124,7 +124,10 @@ def load_test_dataset(
                 f"{token_type} is not in default, swap_entity, sentence_entity, punct_typed_entity"
             )
             print("Please check saved folder name")
-            print("Folder name")
+            print("Folder name : [{backbone model name}] {entity_option}")
+            print(
+                "Warning !! : If you use the klue model, change / to - and set it as the folder name."
+            )
             raise CustomError(ErrorCode.NOT_FOUND, ErrorMsg.WRONG_INPUT)
 
         if is_bert and is_xlm:
