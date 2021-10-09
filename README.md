@@ -104,3 +104,6 @@ BestRun(run_id='6b574_00008', objective=160.6155945027986, hyperparameters={'lea
 
 ### Wandb for Tracking
 ![wandb_img](https://user-images.githubusercontent.com/34739974/136650025-d92d7fac-5967-4cb7-8469-55a74f309e18.PNG)
+
+### Model Architecture
+![klue_re_model_archi](https://user-images.githubusercontent.com/34739974/136650854-ba306883-a71e-4a80-af5a-e70738921632.png)
