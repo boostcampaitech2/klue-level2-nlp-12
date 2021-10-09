@@ -81,3 +81,26 @@ python inference_ensemble.py --model_dir ./ensemble
 
 ### LR Scheduler
 - CosineAnnealingLR
+
+### Hyperparameter Search
+```
++------------------------+------------+-------+-----------------+--------------------+-------------------------------+-------------+
+| Trial name             | status     | loc   |   learning_rate |   num_train_epochs |   per_device_train_batch_size |   objective |
+|------------------------+------------+-------+-----------------+--------------------+-------------------------------+-------------|
+| _objective_6b574_00000 | TERMINATED |       |     2.80576e-05 |                  5 |                           128 |     154.363 |
+| _objective_6b574_00001 | TERMINATED |       |     0.000145532 |                  5 |                            32 |     149.825 |
+| _objective_6b574_00002 | TERMINATED |       |     1.02567e-05 |                  5 |                           128 |     132.344 |
+| _objective_6b574_00003 | TERMINATED |       |     6.53337e-06 |                  6 |                            32 |     147.45  |
+| _objective_6b574_00004 | TERMINATED |       |     7.96526e-05 |                  6 |                           128 |     160.306 |
+| _objective_6b574_00005 | TERMINATED |       |     5.49717e-06 |                  6 |                           256 |     106.767 |
+| _objective_6b574_00006 | TERMINATED |       |     0.000231129 |                  6 |                            64 |     143.499 |
+| _objective_6b574_00007 | TERMINATED |       |     1.1551e-05  |                  5 |                            32 |     154.669 |
+| _objective_6b574_00008 | TERMINATED |       |     2.02981e-05 |                  6 |                            32 |     160.616 |
+| _objective_6b574_00009 | TERMINATED |       |     3.65477e-05 |                  5 |                           128 |     157.183 |
++------------------------+------------+-------+-----------------+--------------------+-------------------------------+-------------+
+
+BestRun(run_id='6b574_00008', objective=160.6155945027986, hyperparameters={'learning_rate': 2.0298058052421517e-05, 'num_train_epochs': 6, 'per_device_train_batch_size': 32})
+```
+
+### Wandb for Tracking
+![wandb_img](https://user-images.githubusercontent.com/34739974/136650025-d92d7fac-5967-4cb7-8469-55a74f309e18.PNG)
