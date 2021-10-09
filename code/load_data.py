@@ -7,7 +7,16 @@ from sklearn.model_selection import train_test_split
 
 
 class RE_Dataset(torch.utils.data.Dataset):
-    """Dataset 구성을 위한 class."""
+    """
+        set Dataset
+
+    Args:
+        pair_dataset (:obj: transformers.tokenization_utils_base.BatchEncoding):
+            tokenized dataset
+            
+        labels (:obj: 1d array-like):
+            int type labels(index).
+    """
 
     def __init__(self, pair_dataset, labels):
         self.pair_dataset = pair_dataset
@@ -28,7 +37,17 @@ class RE_Dataset(torch.utils.data.Dataset):
 
 
 def preprocessing_test_dataset(dataset):
-    """처음 불러온 csv 파일을 원하는 형태의 DataFrame으로 변경 시켜줍니다."""
+    """
+        Change the first test dataset csv file you have called to the desired form of DataFrame.
+        
+     Args:
+        dataset (:obj: pd.DataFrame):
+            raw csv file of pd.DataFrame form
+
+    Returns:
+        test_dataset(:obj: pd.DataFrame):
+            changed test dataset
+    """
     subject_entity = []
     object_entity = []
     for i, j in zip(dataset["subject_entity"], dataset["object_entity"]):
@@ -52,7 +71,17 @@ def preprocessing_test_dataset(dataset):
 
 
 def load_test_data(dataset_dir):
-    """csv 파일을 경로에 맡게 불러 옵니다."""
+    """
+        Calls the test dataset csv file to take over to the path.
+    
+    Args:
+        dataset_dir (:obj: str):
+            path of test dataset directory
+
+    Returns:
+        test_dataset(:obj: pd.DataFrame):
+            changed test dataset
+    """
     pd_dataset = pd.read_csv(dataset_dir)
     test_dataset = preprocessing_test_dataset(pd_dataset)
 
@@ -60,7 +89,20 @@ def load_test_data(dataset_dir):
 
 
 def preprocessing_train_dataset(dataset):
-    """처음 불러온 csv 파일을 원하는 형태의 DataFrame으로 변경 시켜줍니다."""
+    """
+        Change the first train dataset csv file you have called to the desired form of DataFrame.
+        
+     Args:
+        dataset (:obj: pd.DataFrame):
+            raw csv file of pd.DataFrame form
+
+    Returns:
+        train_dataset(:obj: pd.DataFrame):
+            changed train dataset
+        
+        dev_dataset(:obj: pd.DataFrame):
+            changed dev dataset
+    """
     subject_entity = []
     object_entity = []
     for i, j in zip(dataset["subject_entity"], dataset["object_entity"]):
@@ -91,7 +133,21 @@ def preprocessing_train_dataset(dataset):
 
 
 def load_train_data(dataset_dir):
-    """csv 파일을 경로에 맡게 불러 옵니다."""
+    """
+        Calls the train dataset csv file to take over to the path.
+    
+    Args:
+        dataset_dir (:obj: str):
+            path of train dataset directory
+
+    Returns:
+        train_dataset(:obj: pd.DataFrame):
+            changed train dataset
+        
+        dev_dataset(:obj: pd.DataFrame):
+            changed dev dataset
+
+    """
     pd_dataset = pd.read_csv(dataset_dir)
     train_dataset, dev_dataset = preprocessing_train_dataset(pd_dataset)
 
@@ -99,7 +155,17 @@ def load_train_data(dataset_dir):
 
 
 def preprocessing_dataset(dataset):
-    """처음 불러온 csv 파일을 원하는 형태의 DataFrame으로 변경 시켜줍니다."""
+    """
+        Change the first dataset csv file you have called to the desired form of DataFrame.
+        
+     Args:
+        dataset (:obj: pd.DataFrame):
+            raw csv file of pd.DataFrame form
+
+    Returns:
+        out_dataset(:obj: pd.DataFrame):
+            changed dataset
+    """
     subject_entity = []
     object_entity = []
     subject_entity_type = []
@@ -136,7 +202,17 @@ def preprocessing_dataset(dataset):
 
 
 def load_data(dataset_dir):
-    """csv 파일을 경로에 맡게 불러 옵니다."""
+    """
+        Calls the dataset csv file to take over to the path.
+    
+    Args:
+        dataset_dir (:obj: str):
+            path of dataset directory
+
+    Returns:
+        out_dataset(:obj: pd.DataFrame):
+            changed dataset
+    """
     pd_dataset = pd.read_csv(dataset_dir)
     out_dataset = preprocessing_dataset(pd_dataset)
 
@@ -145,7 +221,32 @@ def load_data(dataset_dir):
 
 # https://huggingface.co/transformers/internal/tokenization_utils.html
 def tokenized_dataset(dataset, tokenizer, token_type, is_xlm, is_bert):
-    """tokenizer에 따라 sentence를 tokenizing 합니다."""
+    """
+        According to tokenizer, the sentence is tokenizing.
+    
+    Args:
+        dataset(:obj: pd.DataFrame):
+            tokenizing dataset
+        
+        tokenizer(:obj: tokenizer):
+            Tokenizer to fit model
+        
+        token_type(:obj: str):
+            set token_type
+            options :  default, swap_entity, sentence_entity, punct_typed_entity
+        
+        is_xlm(:obj: bool):
+            if model is xlm, then True
+            else, False
+        
+        is_bert(:obj: bool):
+            if model is bert, then True
+            else, False
+
+    Returns:
+        tokenized_sentences(:obj: transformers.tokenization_utils_base.BatchEncoding):
+            tokenized dataset
+    """
     concat_entity = []
     if is_xlm:
         if token_type == "default":
