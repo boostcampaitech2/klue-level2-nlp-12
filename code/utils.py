@@ -144,3 +144,28 @@ class RobertaEmbeddings(nn.Module):
         embedding = self.tok_embed(input_ids) + self.pos_embed(position_ids) + self.ent_embed(token_type_ids)
         norm = self.norm(embedding)
         return self.dropout(norm)
+
+def ray_hp_space(trial):
+    '''A function for returning ranges of hyperparameters for ray tune search
+
+        Returns:
+            parameter (Dict): Ranges of parameters to search best value
+    '''
+    return {
+        "learning_rate": tune.loguniform(5e-5, 5e-4),
+        "num_train_epochs": tune.choice(range(5, 7)),
+        "per_device_train_batch_size": tune.choice([32, 50, 64]),
+        "seed": tune.choice(range(10, 43)),
+    }
+
+def optuna_hp_space(trial):
+    '''A function for returning ranges of hyperparameters for optuna search
+
+        Returns:
+            parameter (Dict): Ranges of parameters to search best value
+    '''
+    return {
+        "learning_rate": trial.suggest_float("learning_rate", 5e-6, 5e-4, log=True),
+        "num_train_epochs": trial.suggest_int("num_train_epochs", 1, 6),
+        "seed": trial.suggest_int("seed", 1, 42),
+    }
