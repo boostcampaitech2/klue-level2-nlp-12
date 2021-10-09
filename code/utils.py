@@ -43,7 +43,7 @@ def mkdir_model(t):
         print(CustomError(ErrorCode.BAD_REQUEST, ErrorMsg.ALREADY_EXIST))
 
 def get_entity_token_ids(input_ids):
-    '''A function for getting entity ids from input ids
+    '''A function for getting entity ids from input ids when using [ENT], [/ENT] special tokens
 
         Args:
             input_ids (torch.tensor): A word representaion vector from word tokens
