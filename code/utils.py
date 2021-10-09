@@ -9,49 +9,47 @@ from datetime import datetime
 # from konlpy.tag import Mecab
 from sklearn.utils.validation import column_or_1d
 from load_data import *
+from error_handler import *
+from ErrorMsg import *
+from ErrorCode import *
 
 TRAIN_DATA_PATH = '/opt/ml/dataset/train/train.csv'
 
-# AS_IS => 2021-09-30 14:44:46:57
-# TO_BE => 2021-09-30-14:44:46:57
 def korea_now():
     '''A function for calculating real-time based on Korea
-        Raises:
-            RuntimeError: Out of fuel
 
         Returns:
-            cars: A car mileage
+            time (datetime):
+                AS_IS: 2021-09-30 14:44:46:57
+                TO_BE: 2021-09-30-14:44:46:57
     '''
-
-
-    try:
-        now = datetime.now()
-        korea = pytz.timezone("Asia/Seoul")
-        korea_dt = korea.normalize(now.astimezone(korea))
-        return '-'.join(str(korea_dt).split(".")[0].split())
-    except:
-        print('')
-
-
+    now = datetime.now()
+    korea = pytz.timezone("Asia/Seoul")
+    korea_dt = korea.normalize(now.astimezone(korea))
+    return '-'.join(str(korea_dt).split(".")[0].split())
 
 def mkdir_model(t):
-    '''
-    A folder to contain trained model
-    :param t (datetime) : Now
-    :return:
+    '''A function for making directory to save best model
+
+        Args:
+            t (str): A folder name below best_model (top folder)
+
+        Raises:
+            CustomError: A folder name exists
     '''
     try:
         os.mkdir('./best_model/' + t)
     except:
-        print('[ Not Found Path ] 모델을 저장할 폴더를 생성할 수 없습니다.')
-        exit()
+        print(CustomError(ErrorCode.BAD_REQUEST, ErrorMsg.ALREADY_EXIST))
 
+def get_entity_token_ids(input_ids):
+    '''A function for getting entity ids from input ids
 
-def get_entity_token_ids(input_ids: torch.tensor):
-    '''
-    A function for getting entity ids from input ids
-    :param input_ids (tensor): input ids from tokenized words
-    :return: entity_ids (tensor): [0, 0, 1, 0, 0, 0, 1, 0 ...]
+        Args:
+            input_ids (torch.tensor): A word representaion vector from word tokens
+
+        Returns:
+            entity_ids (torch.tensor): A entity representation vector for entity tokens
     '''
     input_ids = input_ids.numpy()
     flag = False
@@ -73,17 +71,18 @@ def get_entity_token_ids(input_ids: torch.tensor):
         entity_ids.append(tmp)
 
     entity_ids = torch.tensor(entity_ids)
+
     print('--- Entity Embedding Ids ---')
     print(entity_ids[0])
     print(entity_ids.shape)
     return entity_ids
 
-
-# def get_mecab_tokenized_result(sentence):
-#
-#     pass
-
 def switch_sub_obj():
+    '''A function for switching subject and object entities each other
+
+        Returns:
+            data (DataFrame): A dataframe made by switching subject - object entity positions if possible
+    '''
     config = {
         "change_entity": {"subject_entity": "object_entity", "object_entity": "subject_entity"},
 
@@ -99,37 +98,44 @@ def switch_sub_obj():
 
         "cols": ['id', 'sentence', 'subject_entity', 'object_entity', 'label']
     }
-    # 1. 훈련 데이터 불러와서 subject_entity 와 object_entitiy의 column name 만 바꾼다.
-    data = load_data(TRAIN_DATA_PATH).rename(columns=config['change_entity'])
-    # 2. subject_entity와 object_entity를 바꿀 수 있는 라벨만 남긴다.
-    data = data[data['label'].isin(config['possible_label_list'])]
-    # 3. column name을 정렬해준다. (1번에서 column name만 obj, sub 순으로 바꿔놨기 때문에 다시 sub, obj 순으로 정리하면 열 전체가 바뀐다.)
-    data = data[config['cols']]
-    # 4. 서로 반대되는 뜻을 가진 label을 바꿔준다.
-    data = data.replace({'label': config['opposite_label_list']})
 
+    # call train data and change column name of subject and object entities
+    data = load_data(TRAIN_DATA_PATH).rename(columns=config['change_entity'])
+    # remain subject and object entities which are possibly switched
+    data = data[data['label'].isin(config['possible_label_list'])]
+    # re-order column name
+    data = data[config['cols']]
+    # switch labels that have different meaning
+    data = data.replace({'label': config['opposite_label_list']})
     return data
 
-
-##########
-# make new embedding module
-##########
 class RobertaEmbeddings(nn.Module):
-    """
-    Same as BertEmbeddings with a tiny tweak for positional embeddings indexing.
-    """
+    '''
+    A class for making new `embeddings` in **roberta model
 
+    Args:
+        model (nn.Module): A embeddings module from pretrained model offered by huggingface
+    '''
     def __init__(self, model):
         super(RobertaEmbeddings, self).__init__()
-        self.tok_embed = model.embeddings.word_embeddings
-        self.pos_embed = model.embeddings.position_embeddings
-        self.ent_embed = nn.Embedding(2, 768)
-        self.norm = model.embeddings.LayerNorm
-        self.dropout = model.embeddings.dropout
+        self.tok_embed = model.embeddings.word_embeddings       # from pretrinaed
+        self.pos_embed = model.embeddings.position_embeddings   # from pretrinaed
+        self.ent_embed = nn.Embedding(2, 768)                   # newly added for entity embedding
+        self.norm = model.embeddings.LayerNorm                  # from pretrinaed
+        self.dropout = model.embeddings.dropout                 # from pretrinaed
         self.padding_idx = 1
 
-    def forward(self, input_ids, token_type_ids=None, position_ids=None, inputs_embeds=None,
-                past_key_values_length=None):
+    def forward(self, input_ids, token_type_ids=None, position_ids=None, inputs_embeds=None, past_key_values_length=None):
+        '''A forward function for including newly added entity embedding layer
+
+        Args:
+            input_ids (torch.tensor): A word representaion vector from word tokens
+            token_type_ids (torch.tensor): A entity representation vector from entity tokens
+            position_ids (torch.tensor): A position representation vector from position values
+
+        Returns:
+            output (torch.tensor): A 3D-tensors of output passing through `embeddings`
+        '''
         seq_length = input_ids.size(1)
         if position_ids is None:
             position_ids = torch.arange(self.padding_idx + 1, seq_length + self.padding_idx + 1, dtype=torch.long,
