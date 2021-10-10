@@ -28,7 +28,7 @@ ensemble 폴더에 앙상블 할 각 모델이 담긴 폴더의 형식을
 """
 
 
-def inference(model, tokenized_sent, device):
+def inference(model, tokenized_sent, device, model_name):
     """
     After making the test dataset as a DataLoader,
     the model predicts it by dividing it by batch_size.
@@ -40,6 +40,8 @@ def inference(model, tokenized_sent, device):
             Load the tokenized statement
         device: (:obj: `torch.device`):
             CUDA or CPU
+        model_name (str):
+            Option - klue/roberta-large, klue/bert-base, xlm-roberta-large
 
     Return:
         output_pred (list), output_prob (list) : tuple of lists
@@ -53,11 +55,18 @@ def inference(model, tokenized_sent, device):
     output_prob = []
     for i, data in enumerate(tqdm(dataloader)):
         with torch.no_grad():
-            outputs = model(
-                input_ids=data["input_ids"].to(device),
-                attention_mask=data["attention_mask"].to(device),
-                # token_type_ids=data['token_type_ids'].to(device) # klue/roberta 관련 모델의 경우, 주석 처리
-            )
+            if model_name == 'klue/bert-base':
+                outputs = model(
+                    input_ids=data["input_ids"].to(device),
+                    attention_mask=data["attention_mask"].to(device),
+                    token_type_ids=data['token_type_ids'].to(device) # klue/roberta 관련 모델의 경우, 주석 처리
+                )
+            else:
+                outputs = model(
+                    input_ids=data["input_ids"].to(device),
+                    attention_mask=data["attention_mask"].to(device),
+                    # token_type_ids=data['token_type_ids'].to(device) # klue/roberta 관련 모델의 경우, 주석 처리
+                )
         logits = outputs[0]
         prob = F.softmax(logits, dim=-1).detach().cpu().numpy()
         logits = logits.detach().cpu().numpy()
@@ -93,19 +102,15 @@ def num_to_label(label):
 
 
 def load_test_dataset(
-    dataset_dir, tokenizer, token_type="default", is_xlm=False, is_bert=False
+    dataset_dir, tokenizer, token_type="default", model_name="klue/roberta-large"
 ):
     """Tokenizing after loading the test dataset.
 
     Args:
         dataset_dir (str): Dataset directory path
         tokenizer : The right tokenizer for your model
-        token_type (str): Option - default / swap_entity / sentence_entity / punct_typed_entity
-        is_xlm (bool): Xlm Architecture has a different token separator definition,
-                       so if it is xlm, you need to replace it with true
-        is_bert (bool): Bert Architecture has return_token_type_ids parameter
-                       so if it is bert, you need to replace it with true
-
+        token_type (str): Option - default, swap_entity, sentence_entity, punct_typed_entity
+        model_name (str): Option - klue/roberta-large, klue/bert-base, xlm-roberta-large
 
     Returns:
         test_dataset["id"], tokenized_test, test_label: Tuple of arrays
@@ -121,7 +126,7 @@ def load_test_dataset(
             "punct_typed_entity",
         ]:
             print(
-                f"{token_type} is not in default, swap_entity, sentence_entity, punct_typed_entity"
+                f"{token_type} is not in [default, swap_entity, sentence_entity, punct_typed_entity]"
             )
             print("Please check saved folder name")
             print("Folder name : [{backbone model name}] {entity_option}")
@@ -130,13 +135,20 @@ def load_test_dataset(
             )
             raise CustomError(ErrorCode.NOT_FOUND, ErrorMsg.WRONG_INPUT)
 
-        if is_bert and is_xlm:
+        if model_name not in [
+            "klue/roberta-large",
+            "klue/bert-base",
+            "xlm-roberta-large"
+        ]:
+            print(
+                f"{model_name} is not in [klue/roberta-large, klue/bert-base, xlm-roberta-large]"
+            )
             raise CustomError(ErrorCode.BAD_REQUEST, ErrorMsg.WRONG_INPUT)
 
         test_dataset = load_data(dataset_dir)
         test_label = list(map(int, test_dataset["label"].values))
         tokenized_test = tokenized_dataset(
-            test_dataset, tokenizer, token_type, is_xlm, is_bert
+            test_dataset, tokenizer, token_type, model_name
         )
         return test_dataset["id"], tokenized_test, test_label
     except CustomError as e:
@@ -163,46 +175,29 @@ def main(args):
         for folder in os.listdir(ensemble_dir):
             print(folder)
             arc_name = folder.split(" ")[0][1:-1]
+
             if "klue" in arc_name:
                 arc_name = (
                     arc_name.split("-")[0] + "/" + "-".join(arc_name.split("-")[1:])
                 )
+            
+            tokenizer = AutoTokenizer.from_pretrained(arc_name)
 
-                if "bert-" in arc_name:
-                    Tokenizer_NAME = arc_name
-                    tokenizer = AutoTokenizer.from_pretrained(Tokenizer_NAME)
-                    test_id, test_dataset, test_label = load_test_dataset(
-                        test_dataset_dir, tokenizer, folder.split(" ")[-1], is_bert=True
-                    )
-                else:
-                    Tokenizer_NAME = arc_name
-                    tokenizer = AutoTokenizer.from_pretrained(Tokenizer_NAME)
-                    test_id, test_dataset, test_label = load_test_dataset(
-                        test_dataset_dir, tokenizer, folder.split(" ")[-1]
-                    )
-
-            elif "xlm" in arc_name:
-                Tokenizer_NAME = arc_name
-                tokenizer = AutoTokenizer.from_pretrained(Tokenizer_NAME)
-                test_id, test_dataset, test_label = load_test_dataset(
-                    test_dataset_dir, tokenizer, folder.split(" ")[-1], is_xlm=True
-                )
-            else:
-                Tokenizer_NAME = arc_name
-                tokenizer = AutoTokenizer.from_pretrained(Tokenizer_NAME)
-                test_id, test_dataset, test_label = load_test_dataset(
-                    test_dataset_dir, tokenizer, folder.split(" ")[-1]
-                )
+            test_id, test_dataset, test_label = load_test_dataset(
+                test_dataset_dir, tokenizer, folder.split(" ")[-1], arc_name
+            )
 
             Re_test_dataset = RE_Dataset(test_dataset, test_label)
+
             model = AutoModelForSequenceClassification.from_pretrained(
                 os.path.join(ensemble_dir, folder)
             )
             model.parameters
             model.to(device)
+
             # predict answer
             pred_answer, output_prob = inference(
-                model, Re_test_dataset, device
+                model, Re_test_dataset, device, arc_name
             )  # Infer class from model
             output_probs.append(np.array(output_prob))
 
@@ -248,4 +243,5 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     print(args)
+    
     main(args)

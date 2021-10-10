@@ -50,12 +50,19 @@ def preprocessing_test_dataset(dataset):
     """
     subject_entity = []
     object_entity = []
-    for i, j in zip(dataset["subject_entity"], dataset["object_entity"]):
-        i = eval(i)["word"]
-        j = eval(j)["word"]
+    subject_entity_type = []
+    object_entity_type = []
+
+    for sub, obj in zip(dataset["subject_entity"], dataset["object_entity"]):
+        i = eval(sub)["word"]
+        j = eval(obj)["word"]
+        k = eval(sub)["type"]
+        l = eval(obj)["type"]
 
         subject_entity.append(i)
         object_entity.append(j)
+        subject_entity_type.append(k)
+        object_entity_type.append(l)
 
     test_dataset = pd.DataFrame(
         {
@@ -63,6 +70,8 @@ def preprocessing_test_dataset(dataset):
             "sentence": dataset["sentence"],
             "subject_entity": subject_entity,
             "object_entity": object_entity,
+            "subject_entity_type": subject_entity_type,
+            "object_entity_type": object_entity_type,
             "label": dataset["label"],
         }
     )
@@ -75,7 +84,7 @@ def load_test_data(dataset_dir):
         Calls the test dataset csv file to take over to the path.
     
     Args:
-        dataset_dir (:obj: str):
+        dataset_dir (str):
             path of test dataset directory
 
     Returns:
@@ -105,21 +114,32 @@ def preprocessing_train_dataset(dataset):
     """
     subject_entity = []
     object_entity = []
-    for i, j in zip(dataset["subject_entity"], dataset["object_entity"]):
-        i = eval(i)["word"]
-        j = eval(j)["word"]
+    subject_entity_type = []
+    object_entity_type = []
+
+    for sub, obj in zip(dataset["subject_entity"], dataset["object_entity"]):
+        i = eval(sub)["word"]
+        j = eval(obj)["word"]
+        k = eval(sub)["type"]
+        l = eval(obj)["type"]
 
         subject_entity.append(i)
         object_entity.append(j)
+        subject_entity_type.append(k)
+        object_entity_type.append(l)
+
     out_dataset = pd.DataFrame(
         {
             "id": dataset["id"],
             "sentence": dataset["sentence"],
             "subject_entity": subject_entity,
             "object_entity": object_entity,
+            "subject_entity_type": subject_entity_type,
+            "object_entity_type": object_entity_type,
             "label": dataset["label"],
         }
     )
+
     # ['sentence', 'subject_entity', 'object_entity'] 패턴의 중복 행 제거
     out_dataset = out_dataset.drop_duplicates(
         ["sentence", "subject_entity", "object_entity"], keep="first"
@@ -137,7 +157,7 @@ def load_train_data(dataset_dir):
         Calls the train dataset csv file to take over to the path.
     
     Args:
-        dataset_dir (:obj: str):
+        dataset_dir (str):
             path of train dataset directory
 
     Returns:
@@ -206,7 +226,7 @@ def load_data(dataset_dir):
         Calls the dataset csv file to take over to the path.
     
     Args:
-        dataset_dir (:obj: str):
+        dataset_dir (str):
             path of dataset directory
 
     Returns:
@@ -220,7 +240,7 @@ def load_data(dataset_dir):
 
 
 # https://huggingface.co/transformers/internal/tokenization_utils.html
-def tokenized_dataset(dataset, tokenizer, token_type, is_xlm, is_bert):
+def tokenized_dataset(dataset, tokenizer, token_type, model_name):
     """
         According to tokenizer, the sentence is tokenizing.
     
@@ -231,24 +251,20 @@ def tokenized_dataset(dataset, tokenizer, token_type, is_xlm, is_bert):
         tokenizer(:obj: tokenizer):
             Tokenizer to fit model
         
-        token_type(:obj: str):
+        token_type(str):
             set token_type
-            options :  default, swap_entity, sentence_entity, punct_typed_entity
+            options : 'default', 'swap_entity', 'sentence_entity', 'punct_typed_entity'
         
-        is_xlm(:obj: bool):
-            if model is xlm, then True
-            else, False
-        
-        is_bert(:obj: bool):
-            if model is bert, then True
-            else, False
+        model_name(str):
+            set model_name.
+            e.g. 'klue/roberta-large', 'xlm-roberta-large', 'klue/bert-base'
 
     Returns:
         tokenized_sentences(:obj: transformers.tokenization_utils_base.BatchEncoding):
             tokenized dataset
     """
     concat_entity = []
-    if is_xlm:
+    if 'xlm' in model_name:
         if token_type == "default":
             for e01, e02 in zip(dataset["subject_entity"], dataset["object_entity"]):
                 temp = ""
@@ -303,7 +319,7 @@ def tokenized_dataset(dataset, tokenizer, token_type, is_xlm, is_bert):
 
     tokenized_sentences = None
 
-    if is_bert:
+    if model_name == 'klue/bert-base':
         tokenized_sentences = tokenizer(
             concat_entity,
             list(dataset["sentence"]),

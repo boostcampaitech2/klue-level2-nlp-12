@@ -272,7 +272,9 @@ def train(args):
     train_label = label_to_num(train_dataset["label"].values)
 
     # tokenizing dataset
-    tokenized_train = tokenized_dataset(train_dataset, tokenizer, model='roberta')
+    # token_type options : 'default', 'swap_entity', 'sentence_entity', 'punct_typed_entity'
+    # model_name options : 'klue/roberta-large', 'xlm-roberta-large', 'klue/bert-base'
+    tokenized_train = tokenized_dataset(train_dataset, tokenizer, token_type=args.token_type, model_name=args.model)
 
     # make dataset for pytorch.
     RE_train_dataset = RE_Dataset(tokenized_train, train_label)
@@ -370,10 +372,12 @@ if __name__ == "__main__":
     parser.add_argument("--eval_steps", type=int, default=500, help="evaluation step (default: 500)")
     parser.add_argument("--best_model_dir", type=str, default="./best_model", help="best model direcotry(default: ./best_model")
     
-    # Container environment
+    # container environment
     parser.add_argument('--train_data_dir', type=str, default="../dataset/train/train.csv",
                         help="train data directory (default: ../dataset/train/train.csv)")
 
+    # token type
+    parser.add_argument('--token_type', type=str, default='default', help='entity token marker type (default: default)')
     args = parser.parse_args()
 
     # 1. Start a new run
