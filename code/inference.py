@@ -12,8 +12,23 @@ from tqdm import tqdm
 
 def inference(model, tokenized_sent, device, model_name):
   """
-    test dataset을 DataLoader로 만들어 준 후,
-    batch_size로 나눠 model이 예측 합니다.
+  After making the test dataset as a DataLoader,
+  the model predicts it by dividing it by batch_size.
+
+  Args:
+    model (:obj: `nn.Module`):
+      Load the trained model
+    tokenized_sent (:obj: `torch.utils.data.Dataset`):
+      Load the tokenized statement
+    device: (:obj: `torch.device`):
+      CUDA or CPU
+    model_name (str):
+      Option - klue/roberta-large, klue/bert-base, xlm-roberta-large
+
+  Return:
+    output_pred (list), output_prob (list) : tuple of lists
+      output_pred : Concat of the labels predicted by the model
+      output_prob : Concat of the probabilities for the labels predicted by the model
   """
   dataloader = DataLoader(tokenized_sent, batch_size=16, shuffle=False)
   model.eval()
@@ -45,7 +60,13 @@ def inference(model, tokenized_sent, device, model_name):
 
 def num_to_label(label):
   """
-    숫자로 되어 있던 class를 원본 문자열 라벨로 변환 합니다.
+  Converts a class from a number to an original string label.
+
+  Args:
+    label (1d array-like): Labels converted to numbers
+
+  Returns:
+    origin_label (list): origin label (string)
   """
   origin_label = []
 
@@ -59,12 +80,23 @@ def num_to_label(label):
 
 def load_test_dataset(dataset_dir, tokenizer, token_type, model_name):
   """
-    test dataset을 불러온 후,
-    tokenizing 합니다.
+  Tokenizing after loading the test dataset.
+
+  Args:
+    dataset_dir (str): Dataset directory path
+    tokenizer : The right tokenizer for your model
+    token_type (str): Option - default, swap_entity, sentence_entity, punct_typed_entity
+    model_name (str): Option - klue/roberta-large, klue/bert-base, xlm-roberta-large
+
+  Returns:
+    test_dataset["id"], tokenized_test, test_label: Tuple of arrays
+      test_dataset["id"] : IDs of test dataset
+      tokenized_test : tokenized test sentance
+      test_label : Labels of test dataset
   """
   test_dataset = load_data(dataset_dir)
   test_label = list(map(int,test_dataset['label'].values))
-  # tokenizing dataset
+
   # tokenizing dataset
   # token_type options : 'default', 'swap_entity', 'sentence_entity', 'punct_typed_entity'
   # model_name options : 'klue/roberta-large', 'xlm-roberta-large', 'klue/bert-base'
@@ -74,7 +106,7 @@ def load_test_dataset(dataset_dir, tokenizer, token_type, model_name):
 
 def main(args):
   """
-    주어진 dataset csv 파일과 같은 형태일 경우 inference 가능한 코드입니다.
+  If the given dataset is in the same format as the csv file, inference is possible.
   """
   device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
   # load tokenizer
