@@ -10,7 +10,7 @@
 - 진혜원/T2217
 
 ## Experiment Log
-- [Experiment Log](https://jet-rook-fae.notion.site/NLP-KLUE-Experiment-Log-b0ee85a289404de9852c579ef7d9b5e5)
+- [Experiment Log](https://www.notion.so/KLUE-RE-aa963e60ab2d4551ac35a67d0cf15299)
 
 ## Wrap-up Report
 - [Wrap-up Report](https://jet-rook-fae.notion.site/Wrap-up-Report-Team-AI-it-ad021d865ec94906a8b45d7cf5760d5b)
